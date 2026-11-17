@@ -1,0 +1,392 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Köln Wochenradar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: eine Wochen-Leiste oben, darunter Tage als lange Spalte; jede Veranstaltung ist ein Flyer mit Acts zum Reinhören */
+:root{
+  --bg:#efe6d8; --surface:#f8f2e8; --line:#d8cbb6; --fg:#2a1f18; --muted:#76665a;
+  --gold:#9a6410; --gold-ink:#fff8ec; --clay:#a8492f; --clay-soft:#f0d6cb; --gold-soft:#f1e0bd;
+  --display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --body:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1d1612; --surface:#271e18; --line:#3d3027; --fg:#f0e4d3; --muted:#a8968a;
+  --gold:#e0ad4c; --gold-ink:#1d1612; --clay:#e07f63; --clay-soft:#3a241d; --gold-soft:#3a2e1c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1d1612; --surface:#271e18; --line:#3d3027; --fg:#f0e4d3; --muted:#a8968a;
+  --gold:#e0ad4c; --gold-ink:#1d1612; --clay:#e07f63; --clay-soft:#3a241d; --gold-soft:#3a2e1c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:40px 20px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(48px,11vw,88px);line-height:.92;margin:10px 0 14px;letter-spacing:-.01em;text-wrap:balance}
+h1 em{color:var(--gold)}
+.lede{max-width:56ch;color:var(--muted);margin:0}
+.lede b{color:var(--fg);font-weight:600}
+
+nav.week{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);
+  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding-block:12px;border-bottom:1px solid var(--line)}
+.day-btn{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;
+  padding:8px 0 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0;min-width:0}
+.day-btn .d{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.day-btn .n{font-family:var(--display);font-size:26px;line-height:1}
+.day-btn .dot{width:5px;height:5px;border-radius:50%;margin-top:4px;background:transparent}
+.day-btn[data-kind="club"] .dot{background:var(--clay)}
+.day-btn[data-kind="live"] .dot{background:var(--gold)}
+.day-btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.day-btn[aria-pressed="true"] .d{color:var(--bg);opacity:.75}
+.day-btn:focus-visible,.play:focus-visible,.fav:focus-visible,.more:focus-visible,.toggle button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.today-tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.day-btn[aria-pressed="true"] .today-tag{color:var(--bg)}
+
+.toggle{display:flex;gap:6px;flex-wrap:wrap;padding-block:14px 0}
+.toggle button{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--gold-soft);border-color:var(--gold)}
+
+section.day{padding-block:34px 4px}
+.day-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:16px}
+.day-head h2{font-family:var(--display);font-weight:400;font-size:clamp(34px,7vw,48px);line-height:1;margin:0}
+.mode{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.mode.live{background:var(--gold-soft);color:var(--gold)}
+.mode.club{background:var(--clay-soft);color:var(--clay)}
+.events{display:flex;flex-direction:column;gap:14px}
+
+.ev{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;display:grid;grid-template-columns:72px 1fr;gap:4px 16px;min-width:0}
+.ev.top{border-color:var(--gold)}
+.time{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;padding-top:4px}
+.time small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.main{min-width:0}
+.ev h3{font-family:var(--body);font-weight:800;font-size:19px;line-height:1.2;margin:0 0 2px;text-wrap:balance}
+.meta{font-size:14px;color:var(--muted);display:flex;gap:4px 12px;flex-wrap:wrap}
+.meta .price{font-family:var(--mono);font-size:13px;color:var(--fg)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid currentColor;border-radius:4px;padding:1px 5px;color:var(--clay)}
+.badge.gold{color:var(--gold)}
+.why{margin:8px 0 10px;font-size:15px;max-width:60ch}
+.acts{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.act{display:flex;align-items:center;gap:10px;min-width:0}
+.play{flex:none;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:600;
+  background:var(--gold);color:var(--gold-ink);border-radius:999px;padding:6px 12px 6px 9px;transition:transform .15s}
+.play:hover{transform:scale(1.04)}
+button.play{font:inherit;font-size:13px;font-weight:600;border:0;cursor:pointer}
+button.play.on{background:var(--clay);color:var(--gold-ink)}
+.act{justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px}
+.act:first-child{border-top:0;padding-top:0}
+.ext{flex:none;font-size:13px;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+.ext:hover{color:var(--fg)}
+
+.setsbox{padding-block:4px 18px}
+.sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.tile{font:inherit;text-align:left;display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;
+  background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.tile:hover{border-color:var(--gold)}
+.tile.on{border-color:var(--clay);background:var(--clay-soft)}
+.tile-play{flex:none;width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);display:grid;place-items:center}
+.tile.on .tile-play{background:var(--clay)}
+.tile-play svg{width:12px;height:12px;fill:currentColor;margin-left:2px}
+.tile-txt{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.tile-txt b{font-weight:600;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile-txt small{color:var(--muted);font-size:12px}
+
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  box-shadow:0 -8px 24px rgba(0,0,0,.25);
+  padding:8px max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.dock-head{display:flex;align-items:center;gap:10px;max-width:760px;margin:0 auto 6px;font-size:14px;font-weight:600}
+#dock-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#dock-close{font:inherit;background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;width:30px;height:30px;cursor:pointer}
+#dock-frame{max-width:760px;margin:0 auto}
+#dock-frame iframe{width:100%;height:120px;border:0;border-radius:8px;display:block}
+#dock-frame iframe.yt{width:min(100%,320px);height:auto;aspect-ratio:16/9;background:#000}
+body.docked{padding-bottom:260px}
+body.docked{padding-bottom:200px}
+.dock-eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px}
+.dock-eq i{width:3px;background:var(--clay);animation:eq 0.9s ease-in-out infinite}
+.dock-eq i:nth-child(2){animation-delay:.2s}.dock-eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:4px}50%{height:14px}}
+@media (prefers-reduced-motion:reduce){.dock-eq i{animation:none;height:10px}}
+.play svg{width:12px;height:12px;fill:currentColor}
+.act .who{min-width:0;overflow-wrap:anywhere;font-size:15px}
+.act .who span{color:var(--muted);font-size:13px}
+.foot{grid-column:2;display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.more{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.fav{font:inherit;font-size:13px;background:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted);cursor:pointer}
+.fav[aria-pressed="true"]{color:var(--clay);border-color:var(--clay);background:var(--clay-soft)}
+.empty{color:var(--muted);font-style:italic;padding:8px 0}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+footer a{color:inherit}
+@media (max-width:520px){
+  .ev{grid-template-columns:1fr}
+  .time{display:flex;gap:8px;align-items:baseline;padding-top:0}
+  .time small{display:inline}
+  .foot{grid-column:1}
+  .day-btn .n{font-size:21px}
+  .day-btn .d{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){.play{transition:none}}
+</style>
+</head><body>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">KW 47 · 17.–22. November 2026 · Köln</div>
+    <h1>Was läuft,<br><em>und wie klingt's?</em></h1>
+    <p class="lede">Unter der Woche <b>Konzerte</b>, ab Freitag <b>Club</b>. Tipp auf ein Set und es läuft unten im Player weiter, während du durch die Woche scrollst.</p>
+  </header>
+
+  <section class="setsbox" aria-label="Sets zum Reinhören">
+    <div class="kicker">Sofort reinhören · Sets &amp; Songs der Woche</div>
+    <div class="sets" id="sets"></div>
+  </section>
+
+  <nav class="week" id="week" aria-label="Tage"></nav>
+  <div class="toggle" role="group" aria-label="Filter">
+    <button type="button" id="f-all" aria-pressed="true">Alles</button>
+    <button type="button" id="f-fav" aria-pressed="false">Nur gemerkte</button>
+  </div>
+
+  <main id="list"></main>
+
+  <div id="dock" hidden>
+    <div class="dock-head"><span class="dock-eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="dock-title"></span><a id="dock-ext" class="ext" target="_blank" rel="noopener" href="#">↗</a><button type="button" id="dock-close" aria-label="Player schließen">✕</button></div>
+    <div id="dock-frame"></div>
+  </div>
+
+  <footer>
+    Stand: Dienstag, 17. November. Quellen: Resident Advisor, technoairlines.com, mvp.de. Zeiten und Preise können sich ändern, vor dem Losgehen kurz checken. Die Merk-Herzen bleiben nur in diesem Browser.
+  </footer>
+</div>
+
+<script>
+const SC = n => "https://soundcloud.com/search/sounds?q=" + encodeURIComponent(n);
+// Verifizierte SoundCloud-Seiten: diese laufen direkt hier im Player
+const EMBED = {
+  "Dominik Eulberg": "https://soundcloud.com/dominik-eulberg/dominik-eulberg-lepidoptera-dj-mix",
+  "Victor Ruiz": "https://soundcloud.com/progressiveastronaut/progressive-astronaut-podcast-037-victor-ruiz",
+  "Mira & Chris Schwarzwälder": "https://soundcloud.com/mira_chris/disco-knights-burning-man-2016",
+  "Mira": "https://soundcloud.com/mira_kater",
+  "Felix Kröcher": "https://soundcloud.com/felix-kroecher",
+  "Traumer": "https://soundcloud.com/traumer/traumer-all-night-long-bellona-lyon-fr",
+  "Claudio PRC": "https://soundcloud.com/claudioprc/mnmtlivestream-claudioprc",
+  "Grace Dahl": "https://soundcloud.com/gracedahl/drum-n-grace-01",
+  "Mike Momburg": "https://soundcloud.com/mondo_disko/mix-75-mike-momburg",
+  // YouTube-Videos für die Konzerte (IDs aus IMVDb)
+  "Joe Jackson": "yt:RBJUHvQPFTI",
+  "Anna von Hausswolff": "yt:Nre0hcDz5TI",
+  "Baby Lasagna": "yt:YIouQFxo0h0",
+  "The Sheepdogs": "yt:h_5q0n2mDR8",
+};
+const isYT = u => u.startsWith("yt:");
+const ytWatch = u => "https://www.youtube.com/watch?v=" + u.slice(3);
+const embedSrc = u => isYT(u) ? "https://www.youtube-nocookie.com/embed/" + u.slice(3) + "?autoplay=1&rel=0&playsinline=1" : "https://w.soundcloud.com/player/?url=" + encodeURIComponent(u) +
+  "&color=%23c0634a&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false";
+const SCset = n => SC(n + " set");
+
+const DAYS = [
+  {id:"di", d:"Di", n:17, name:"Dienstag", kind:"live", today:true},
+  {id:"mi", d:"Mi", n:18, name:"Mittwoch", kind:"live"},
+  {id:"do", d:"Do", n:19, name:"Donnerstag", kind:"live"},
+  {id:"fr", d:"Fr", n:20, name:"Freitag", kind:"club"},
+  {id:"sa", d:"Sa", n:21, name:"Samstag", kind:"club"},
+  {id:"so", d:"So", n:22, name:"Sonntag", kind:"live"},
+];
+
+const EVENTS = [
+  // Dienstag
+  {day:"di", id:"joejackson", time:"19:30", title:"Joe Jackson & Band", venue:"Gloria", area:"Innenstadt",
+   why:"Der Mann hinter „Steppin' Out“. Hope And Fury Tour, mit Band.",
+   acts:[{n:"Joe Jackson", u:SC("Joe Jackson Steppin Out")}]},
+  {day:"di", id:"kinggeorg", time:"abends", title:"Hamilton – Goldsby – Sasse", venue:"King Georg", area:"Agnesviertel", tag:"Jazz",
+   why:"Jazz-Trio im kleinen Club, läuft Dienstag und Mittwoch.",
+   acts:[{n:"Hamilton Goldsby Sasse", u:SC("Hamilton Goldsby Sasse")}]},
+
+  // Mittwoch
+  {day:"mi", id:"hausswolff", top:true, time:"abends", title:"Anna von Hausswolff", venue:"Stadthalle Köln", area:"Mülheim",
+   why:"Schwedin an der Orgel. Düster, laut, riesig: Drone trifft Gothic. Live eine Wucht.",
+   acts:[{n:"Anna von Hausswolff", u:SC("Anna von Hausswolff")}]},
+  {day:"mi", id:"sheepdogs", time:"20:00", title:"The Sheepdogs", venue:"Gebäude 9", area:"Deutz",
+   why:"Kanadischer Classic-Rock mit viel 70er-Gitarre.",
+   acts:[{n:"The Sheepdogs", u:SC("The Sheepdogs")}]},
+  {day:"mi", id:"lasagna", time:"abends", title:"Baby Lasagna", venue:"Die Kantine", area:"Longerich",
+   why:"Der Kroate mit „Rim Tim Tagi Dim“ vom ESC 2024. Party garantiert.",
+   acts:[{n:"Baby Lasagna", u:SC("Baby Lasagna Rim Tim Tagi Dim")}]},
+  {day:"mi", id:"quelle", time:"abends", title:"Quelle Chris & Fly Anakin", venue:"Veedel Club", area:"", tag:"Hip-Hop",
+   why:"US-Underground-Rap, NightShift Tour.",
+   acts:[{n:"Quelle Chris", u:SC("Quelle Chris")},{n:"Fly Anakin", u:SC("Fly Anakin")}]},
+  {day:"mi", id:"amistat1", time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt", price:"ab ca. 49 €",
+   why:"Folk-Duo, zweistimmig und ruhig. Spielt Mittwoch und Donnerstag.",
+   acts:[{n:"Amistat", u:SC("Amistat")}]},
+
+  // Donnerstag
+  {day:"do", id:"muff", time:"abends", title:"Muff Potter", venue:"Die Kantine", area:"Longerich",
+   why:"Deutscher Punk-Indie mit Texten zum Mitbrüllen. Klepto Tour 2026.",
+   acts:[{n:"Muff Potter", u:SC("Muff Potter")}]},
+  {day:"do", id:"amistat2", time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt", price:"ab ca. 49 €",
+   why:"Zweiter Abend, falls Mittwoch nicht passt.",
+   acts:[{n:"Amistat", u:SC("Amistat")}]},
+  {day:"do", id:"mietze", time:"19:00", title:"Mietze Conte", venue:"Garagen", area:"",
+   why:"Deutschsprachiger Pop, kleiner Laden.",
+   acts:[{n:"Mietze Conte", u:SC("Mietze Conte")}]},
+
+  // Freitag
+  {day:"fr", id:"mira", top:true, time:"23:00", end:"open end", title:"Mira & Chris Schwarzwälder", venue:"Odonien", area:"Neuehrenfeld", tag:"All Night Long",
+   why:"Kater-Blau-Residents aus Berlin, die ganze Nacht b2b. Tief, warm, langsam groovend. Für Leute, die lieber schweben als stampfen.",
+   acts:[{n:"Mira & Chris Schwarzwälder", note:"b2b", u:"https://soundcloud.com/mira_chris"},{n:"Mira", note:"solo", u:"https://soundcloud.com/mira_kater"}],
+   link:"https://www.technoairlines.com/event/mira-chris-schwarzwalder-all-night-long-odonien-2026-11-20"},
+  {day:"fr", id:"antea", top:true, time:"23:00", end:"08:00", title:"ANTEA", venue:"Schrotty", area:"Ossendorf", price:"18 €",
+   why:"Zwei Floors, Rhythmic Techno. Main: Grace Dahl b2b ANNĒ (Amsterdam, hypnotisch und groovy). Beliebteste Party der Woche.",
+   acts:[{n:"Grace Dahl", note:"b2b ANNĒ", u:SCset("Grace Dahl")},{n:"ANNĒ", u:SCset("ANNE techno")},{n:"Lacchesi", u:SCset("Lacchesi")},{n:"JKS", note:"Second Floor", u:SCset("JKS techno")}],
+   link:"https://de.ra.co/events/2555000"},
+  {day:"fr", id:"traumer", time:"23:00", title:"fi x Traumer & Akte", venue:"fi", area:"",
+   why:"Traumer aus Paris (Label Gettraum): verspielter Minimal-House, sehr hüftig.",
+   acts:[{n:"Traumer", u:SCset("Traumer")},{n:"Interplay", u:SCset("Interplay")},{n:"Phil2", u:SCset("Phil2")}],
+   link:"https://ra.co/events/2542421"},
+  {day:"fr", id:"kroecher", time:"23:00", title:"Schranz is Back mit Felix Kröcher", venue:"Helios37", area:"Ehrenfeld", tag:"ausverkauft",
+   why:"Frankfurter Techno-Urgestein, hier in Schranz-Laune. Hart und schnell.",
+   acts:[{n:"Felix Kröcher", u:"https://soundcloud.com/felix-kroecher"}],
+   link:"https://www.technoairlines.com/event/sold-out-schranz-is-back-koln-with-felix-krocher-helios37-2026-11-20"},
+  {day:"fr", id:"momburg", time:"23:00", title:"SOUND SOUND x Mike Momburg", venue:"Artheater", area:"Ehrenfeld", tag:"All Night Long",
+   why:"Mike Momburg die ganze Nacht, dazu Kara Okay, KIM SWIM, Milion.",
+   acts:[{n:"Mike Momburg", u:SCset("Mike Momburg")},{n:"KIM SWIM", u:SCset("KIM SWIM")}],
+   link:"https://www.technoairlines.com/event/sound-sound-x-mike-momburg-all-night-long-with-kara-okay-kim-swim-mi-artheater-2026-11-20"},
+  {day:"fr", id:"thirdroom", time:"23:00", title:"The Third Room", venue:"Gewölbe", area:"Hans-Böckler-Platz",
+   why:"Ahmet Sisman und Claudio PRC (italienischer Deep-Techno, sehr hypnotisch).",
+   acts:[{n:"Ahmet Sisman", u:SCset("Ahmet Sisman")},{n:"Claudio PRC", u:SCset("Claudio PRC")}],
+   link:"https://www.technoairlines.com/event/the-third-room-with-ahmet-sisman-claudio-prc-di%c2%b2-gewolbe-2026-11-20"},
+
+  // Samstag
+  {day:"sa", id:"eulberg", top:true, time:"23:00", title:"fi x Dominik Eulberg & neunsechsneun", venue:"fi", area:"",
+   why:"Der Techno-Ornithologe: melodisch, verträumt, Tracks heißen nach Schmetterlingen und Vögeln. Mit Cosanne.",
+   acts:[{n:"Dominik Eulberg", u:"https://soundcloud.com/dominik-eulberg"},{n:"Cosanne", u:SCset("Cosanne")}],
+   link:"https://ra.co/events/2550648"},
+  {day:"sa", id:"ruiz", time:"23:00", title:"BergWacht mit Victor Ruiz", venue:"Artheater", area:"Ehrenfeld",
+   why:"Brasilianer, Drumcode-Familie. Treibender, psychedelischer Peak-Time-Techno.",
+   acts:[{n:"Victor Ruiz", u:"https://soundcloud.com/victorruiz"},{n:"Liho", u:SCset("Liho")},{n:"Max Blumen", u:SCset("Max Blumen")}],
+   link:"https://www.technoairlines.com/event/bergwacht-with-victor-ruiz-uvm-artheater-2026-11-21"},
+  {day:"sa", id:"csm", time:"23:00", title:"CSM mit Anatoli & DJ Brause", venue:"Gewölbe", area:"Hans-Böckler-Platz",
+   why:"Lokale Kölner Nacht mit DJ Karriere und Paula Tape.",
+   acts:[{n:"Anatoli", u:SCset("Anatoli DJ")},{n:"DJ Brause", u:SCset("DJ Brause")},{n:"DJ Karriere", u:SCset("DJ Karriere")}],
+   link:"https://ra.co/events/2560347"},
+  {day:"sa", id:"lichtblick", time:"23:00", title:"Lichtblick – Winter Rave", venue:"Odonien", area:"Neuehrenfeld",
+   why:"Line-up noch nicht raus. Odonien im Winter ist trotzdem immer ein Erlebnis.",
+   acts:[], link:"https://www.technoairlines.com/event/lichtblick-in-odonien-odonien-2026-11-21"},
+  {day:"sa", id:"soffie", time:"19:00", title:"soffie", venue:"Luxor", area:"Südstadt", tag:"Konzert", gold:true,
+   why:"Falls du vorher noch was Live willst: Indie-Pop, Für mich da Tour.",
+   acts:[{n:"soffie", u:SC("soffie")}]},
+
+  // Sonntag
+  {day:"so", id:"cassia", time:"abends", title:"Cassia", venue:"Club Volta", area:"Mülheim",
+   why:"Britisches Indie-Trio, sonnig und gitarrig. Lemon Gelato Tour.",
+   acts:[{n:"Cassia", u:SC("Cassia band")}]},
+  {day:"so", id:"carsick", time:"abends", title:"CARSICK", venue:"Blue Shell", area:"Belgisches Viertel",
+   why:"Kleiner Gig im Blue Shell, perfekt zum Ausklingen.",
+   acts:[{n:"CARSICK", u:SC("Carsick")}]},
+];
+
+const PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1.2v9.6L10.4 6z"/></svg>';
+let favs = {};
+try{ favs = JSON.parse(localStorage.getItem("kwr-favs")||"{}") || {}; }catch(e){ favs = {}; }
+const saveFavs = () => { try{ localStorage.setItem("kwr-favs", JSON.stringify(favs)); }catch(e){} };
+
+let activeDay = null, onlyFav = false;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderWeek(){
+  document.getElementById("week").innerHTML = DAYS.map(d =>
+    `<button type="button" class="day-btn" id="day-${d.id}" data-kind="${d.kind}" data-day="${d.id}" aria-pressed="${activeDay===d.id}">
+      <span class="d">${d.d}</span><span class="n">${d.n}</span>${d.today?'<span class="today-tag">heute</span>':'<span class="dot"></span>'}
+    </button>`).join("") +
+    `<button type="button" class="day-btn" id="day-all" data-day="" aria-pressed="${activeDay===null}"><span class="d">Alle</span><span class="n">↓</span><span class="dot"></span></button>`;
+}
+
+function renderList(){
+  const html = DAYS.filter(d => !activeDay || d.id===activeDay).map(d => {
+    let evs = EVENTS.filter(e => e.day===d.id);
+    if(onlyFav) evs = evs.filter(e => favs[e.id]);
+    const mode = d.kind==="club" ? '<span class="mode club">Club · elektronisch</span>' : '<span class="mode live">Live · Konzerte</span>';
+    const body = evs.length ? evs.map(card).join("") : `<p class="empty">${onlyFav?"Noch nichts gemerkt an diesem Tag.":"Nichts gefunden."}</p>`;
+    return `<section class="day" id="sec-${d.id}"><div class="day-head"><h2>${d.name} ${d.n}.</h2>${mode}</div><div class="events">${body}</div></section>`;
+  }).join("");
+  document.getElementById("list").innerHTML = html;
+}
+
+function card(e){
+  const tag = e.tag ? `<span class="badge${e.gold?' gold':''}">${esc(e.tag)}</span>` : "";
+  const top = e.top ? `<span class="badge gold">Tipp</span>` : "";
+  const acts = e.acts.length ? `<div class="acts">${e.acts.map((a,i) => {
+      const who = `<span class="who">${esc(a.n)}${a.note?` <span>· ${esc(a.note)}</span>`:""}</span>`;
+      const emb = EMBED[a.n];
+      if(emb) return `<div class="act">${who}<button type="button" class="play" id="p-${e.id}-${i}" data-embed="${esc(emb)}" data-title="${esc(a.n)} · ${esc(e.venue)}">${PLAY}Abspielen</button></div>`;
+      return `<div class="act">${who}<a class="ext" href="${a.u}" target="_blank" rel="noopener">SoundCloud ↗</a></div>`;
+    }).join("")}</div>`
+    : `<p class="empty">Line-up folgt.</p>`;
+  return `<article class="ev${e.top?' top':''}">
+    <div class="time">${esc(e.time)}${e.end?`<small>bis ${esc(e.end)}</small>`:""}</div>
+    <div class="main">
+      <h3>${esc(e.title)}</h3>
+      <div class="meta"><span>${esc(e.venue)}${e.area?` · ${esc(e.area)}`:""}</span>${e.price?`<span class="price">${esc(e.price)}</span>`:""}${top}${tag}</div>
+      <p class="why">${esc(e.why)}</p>
+      ${acts}
+    </div>
+    <div class="foot">
+      <button type="button" class="fav" id="fav-${e.id}" data-fav="${e.id}" aria-pressed="${!!favs[e.id]}">${favs[e.id]?"♥ gemerkt":"♡ merken"}</button>
+      ${e.link?`<a class="more" href="${e.link}" target="_blank" rel="noopener">Tickets & Line-up</a>`:""}
+    </div>
+  </article>`;
+}
+
+document.addEventListener("click", ev => {
+  const day = ev.target.closest(".day-btn");
+  if(day){ activeDay = day.dataset.day || null; renderWeek(); renderList(); document.getElementById("week").scrollIntoView({behavior:"smooth"}); return; }
+  const p = ev.target.closest("[data-embed]");
+  if(p){ playIn(p.dataset.embed, p.dataset.title); return; }
+  if(ev.target.closest("#dock-close")){ stopDock(); return; }
+  const f = ev.target.closest(".fav");
+  if(f){ const id=f.dataset.fav; favs[id]=!favs[id]; if(!favs[id]) delete favs[id]; saveFavs(); renderList(); return; }
+});
+document.getElementById("f-all").onclick = () => { onlyFav=false; sync(); };
+document.getElementById("f-fav").onclick = () => { onlyFav=true; sync(); };
+function sync(){ document.getElementById("f-all").setAttribute("aria-pressed",!onlyFav); document.getElementById("f-fav").setAttribute("aria-pressed",onlyFav); renderList(); }
+
+let nowPlaying = null;
+function playIn(url, title){
+  if(nowPlaying === url){ stopDock(); return; }
+  nowPlaying = url;
+  document.getElementById("dock-title").textContent = title;
+  document.getElementById("dock-frame").innerHTML = `<iframe class="${isYT(url)?"yt":""}" title="Player" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen src="${embedSrc(url)}"></iframe>`;
+  const ext = document.getElementById("dock-ext");
+  ext.href = isYT(url) ? ytWatch(url) : url; ext.textContent = isYT(url) ? "YouTube ↗" : "SoundCloud ↗";
+  document.getElementById("dock").hidden = false; document.body.classList.add("docked");
+  markPlaying();
+}
+function stopDock(){
+  nowPlaying = null;
+  document.getElementById("dock-frame").innerHTML = "";
+  document.getElementById("dock").hidden = true; document.body.classList.remove("docked");
+  markPlaying();
+}
+function markPlaying(){
+  document.querySelectorAll("[data-embed]").forEach(b => {
+    const on = b.dataset.embed === nowPlaying;
+    b.classList.toggle("on", on);
+    if(b.classList.contains("play")) b.innerHTML = on ? "■ Läuft" : PLAY + "Abspielen";
+  });
+}
+function renderSets(){
+  const tiles = [];
+  EVENTS.forEach(e => e.acts.forEach(a => { if(EMBED[a.n]) {
+    const d = DAYS.find(x => x.id===e.day);
+    tiles.push(`<button type="button" class="tile${isYT(EMBED[a.n])?" yt":""}" id="t-${e.id}-${tiles.length}" data-embed="${esc(EMBED[a.n])}" data-title="${esc(a.n)} · ${esc(e.venue)}">
+      <span class="tile-play">${PLAY}</span><span class="tile-txt"><b>${esc(a.n)}</b><small>${d.d} ${d.n}. · ${esc(e.venue)}${isYT(EMBED[a.n])?" · Video":""}</small></span></button>`);
+  }}));
+  document.getElementById("sets").innerHTML = tiles.join("");
+}
+const _renderList = renderList;
+renderList = function(){ _renderList(); markPlaying(); };
+renderSets(); renderWeek(); renderList();
+</script>
+</body></html>
