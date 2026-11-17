@@ -234,7 +234,6 @@ body.docked{padding-bottom:300px}
   <section class="sec" id="regal" aria-label="Reinhören">
     <div class="sec-head">
       <div><h2>Reinhören</h2><p>DJ-Sets und Videos der Woche, direkt hier abspielbar.</p></div>
-      <button type="button" class="covers-btn" id="covers-btn">Cover laden</button>
     </div>
     <div class="shelf" id="shelf"></div>
   </section>
@@ -251,7 +250,7 @@ body.docked{padding-bottom:300px}
 
   <footer>
     <span>Stand: Dienstag, 17. November 2026. Zeiten und Preise können sich ändern, vor dem Losgehen kurz checken.</span>
-    <span>Ticketpreise &amp; Verfügbarkeit laut Eventim, Stand 17.11., 16:50 Uhr (inkl. Gebühren). Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de, eventim.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Gemerkte Events bleiben nur in diesem Browser.</span>
+    <span>Ticketpreise &amp; Verfügbarkeit laut Eventim, Stand 17.11., 16:50 Uhr (inkl. Gebühren). Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de, eventim.de. Coverbilder werden von SoundCloud und YouTube geladen, dabei geht deine IP-Adresse an diese Dienste. Gemerkte Events bleiben nur in diesem Browser.</span>
   </footer>
 </div>
 
@@ -411,18 +410,9 @@ async function loadArt(url){
   return ART[url];
 }
 
-/* ── Cover erst nach Zustimmung (sonst gehen IP-Adressen an SoundCloud/YouTube) ── */
-let coversOk = false; try{ coversOk = localStorage.getItem("kwr-covers") === "1"; }catch(e){}
-function syncCoversBtn(){
-  const b = document.getElementById("covers-btn");
-  b.textContent = coversOk ? "Cover an ✓" : "Cover laden";
-  b.setAttribute("aria-pressed", coversOk);
-  b.title = "Lädt Coverbilder von SoundCloud und YouTube. Dabei wird deine IP-Adresse an diese Dienste übertragen.";
-}
-document.getElementById("covers-btn").onclick = () => {
-  coversOk = !coversOk; try{ localStorage.setItem("kwr-covers", coversOk ? "1" : "0"); }catch(e){}
-  renderShelf();
-};
+/* ── Cover werden automatisch geladen (SoundCloud oEmbed / YouTube-Thumbnails) ── */
+const coversOk = true;
+function syncCoversBtn(){}
 
 /* ── Plattenregal ── */
 const SHELF = [];
