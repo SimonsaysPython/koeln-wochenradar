@@ -5,249 +5,253 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Köln Wochenradar</title>
 <meta name="description" content="Was diese Woche in Köln läuft – mit Playern zum direkten Reinhören.">
-<meta name="theme-color" content="#0c0d10">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f2f1ed" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 <style>
-@font-face{font-family:"Archivo";src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
-@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
-/* Layout: Plakat-Masthead → Plattenregal (horizontal) → Wochenleiste → Flyer-Liste pro Tag → fester Plattenspieler unten */
+@font-face{font-family:"Inter";src:url(fonts/inter-latin-wght-normal.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Inter Tight";src:url(fonts/inter-tight-latin-wght-normal.woff2) format("woff2");font-weight:100 900;font-display:swap}
+/* Layout: ruhiges Raster. Kopf mit Zweiton-Headline + Kennzahlen, Plattenregal, Wochen-Segmente, Tage als zweispaltige Liste mit Haarlinien, schwebender Player */
 :root{
-  --bg:#f1f1ef; --surface:#ffffff; --sunk:#e6e6e3; --line:#d9d9d5; --fg:#111216; --muted:#676a72;
-  --gold:#e30613; --gold-hi:#ff3b30; --clay:#111216; --ink-on:#ffffff; --shadow:rgba(10,12,20,.14);
-  --display:"Archivo","Arial Narrow",Impact,sans-serif;
-  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-  --body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --bg:#f2f1ed; --surface:#fbfbf9; --sunk:#e9e8e3; --line:#dedcd6; --fg:#151515; --muted:#85847e; --soft:#b5b3ac;
+  --accent:#56633f; --accent-soft:#e3e6d8; --on-accent:#ffffff; --hot:#b7791f; --shadow:rgba(20,20,15,.10);
+  --display:"Inter Tight","Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0c0d10; --surface:#16181d; --sunk:#111317; --line:#272a31; --fg:#f2f2f0; --muted:#8e919a;
-  --gold:#ff2a2a; --gold-hi:#ff5a4f; --clay:#f2f2f0; --ink-on:#ffffff; --shadow:rgba(0,0,0,.5); color-scheme:dark}}
+  --bg:#111111; --surface:#181818; --sunk:#1e1e1d; --line:#2a2a28; --fg:#ededeb; --muted:#8c8b86; --soft:#5a5955;
+  --accent:#b3c196; --accent-soft:#262b1f; --on-accent:#141612; --hot:#e0a84a; --shadow:rgba(0,0,0,.45); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0c0d10; --surface:#16181d; --sunk:#111317; --line:#272a31; --fg:#f2f2f0; --muted:#8e919a;
-  --gold:#ff2a2a; --gold-hi:#ff5a4f; --clay:#f2f2f0; --ink-on:#ffffff; --shadow:rgba(0,0,0,.5); color-scheme:dark}
+  --bg:#111111; --surface:#181818; --sunk:#1e1e1d; --line:#2a2a28; --fg:#ededeb; --muted:#8c8b86; --soft:#5a5955;
+  --accent:#b3c196; --accent-soft:#262b1f; --on-accent:#141612; --hot:#e0a84a; --shadow:rgba(0,0,0,.45); color-scheme:dark}
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
-  font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:env(safe-area-inset-top,0px) 48px;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
-  background:radial-gradient(900px 420px at 92% -8%, color-mix(in srgb,var(--gold) 22%,transparent), transparent 60%)}
-.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:90px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55;font-feature-settings:"cv11","ss01";
+  -webkit-font-smoothing:antialiased;
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));
+  padding-block:env(safe-area-inset-top,0px) 40px;overflow-x:hidden}
+.wrap{max-width:1040px;margin:0 auto}
 a{color:inherit}
 button{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+.label{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.01em}
 
-/* ── Masthead ── */
-.mast{padding-block:28px 8px;display:grid;gap:14px}
-.mast-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.live{display:inline-flex;align-items:center;gap:8px}
-.live i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 var(--gold);animation:ping 2s infinite}
-@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
-h1{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;
-  font-size:clamp(64px,17vw,176px);line-height:.82;letter-spacing:-.01em;text-transform:uppercase}
-h1 .row2{display:flex;align-items:baseline;gap:.18em;flex-wrap:wrap}
-h1 em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;color:var(--gold);
-  font-size:.62em;letter-spacing:0;font-variation-settings:normal}
-.lede{margin:4px 0 0;max-width:52ch;color:var(--muted);font-size:17px}
-.lede b{color:var(--fg);font-weight:700}
+/* Kopfleiste */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px 0}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand svg{width:22px;height:22px}
+.topbar nav{display:flex;gap:22px;align-items:center;font-size:13px;color:var(--muted)}
+.topbar nav a{text-decoration:none}
+.topbar nav a:hover{color:var(--fg)}
+.kw{background:var(--fg);color:var(--bg);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;white-space:nowrap}
 
-/* ── Cover erst nach Zustimmung (sonst gehen IP-Adressen an SoundCloud/YouTube) ── */
-let coversOk = false; try{ coversOk = localStorage.getItem("kwr-covers") === "1"; }catch(e){}
-function syncCoversBtn(){
-  const b = document.getElementById("covers-btn");
-  b.textContent = coversOk ? "Cover an ✓" : "Cover laden";
-  b.setAttribute("aria-pressed", coversOk);
-  b.title = "Lädt Coverbilder von SoundCloud und YouTube. Dabei wird deine IP-Adresse an diese Dienste übertragen.";
-}
-document.getElementById("covers-btn").onclick = () => {
-  coversOk = !coversOk; try{ localStorage.setItem("kwr-covers", coversOk ? "1" : "0"); }catch(e){}
-  renderShelf();
-};
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:40px;padding-block:64px 48px;border-bottom:1px solid var(--line);align-items:end}
+h1{margin:0;font-family:var(--display);font-weight:600;font-size:clamp(40px,6.4vw,76px);line-height:.98;letter-spacing:-.035em;text-wrap:balance}
+h1 span{color:var(--soft)}
+.lede{margin:22px 0 0;max-width:46ch;color:var(--muted);font-size:16px}
+.stats{display:grid;grid-template-columns:1fr 1fr;border-left:1px solid var(--line)}
+.stat{padding:14px 0 14px 24px}
+.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+.stat b{display:block;font-family:var(--display);font-weight:600;font-size:34px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
 
-/* ── Plattenregal ── */
-.crate{margin-top:26px}
-.sec-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.shelf{display:grid;grid-auto-flow:column;grid-auto-columns:148px;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:4px 2px 18px;margin-inline:-2px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.rec{all:unset;cursor:pointer;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;min-width:0;position:relative}
-.sleeve{position:relative;aspect-ratio:1;border-radius:6px;overflow:visible}
-.disc{position:absolute;inset:4%;border-radius:50%;transition:transform .5s cubic-bezier(.2,.8,.2,1);
-  background:repeating-radial-gradient(circle at 50% 50%, #111 0 2px, #1d1d1d 2px 3px);box-shadow:0 2px 8px rgba(0,0,0,.4)}
-.disc::after{content:"";position:absolute;inset:34%;border-radius:50%;background:var(--gold);
-  box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--gold) 70%,#000)}
-.cover{position:absolute;inset:0;border-radius:6px;overflow:hidden;box-shadow:0 10px 24px var(--shadow);background:var(--sunk);transition:transform .25s}
+/* Abschnittskopf */
+.sec{padding-top:48px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:24px;letter-spacing:-.02em}
+.sec-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.covers-btn{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:500}
+.covers-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+
+/* Plattenregal */
+.shelf{display:grid;grid-auto-flow:column;grid-auto-columns:176px;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:14px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rec{all:unset;cursor:pointer;scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;min-width:0;position:relative}
+.sleeve{position:relative;aspect-ratio:1}
+.cover{position:absolute;inset:0;border-radius:14px;overflow:hidden;background:var(--sunk);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .cover img{width:100%;height:100%;object-fit:cover;display:block}
-.gen{position:absolute;inset:0;display:flex;align-items:flex-start;padding:34px 10px 10px;hyphens:auto;-webkit-hyphens:auto;color:#fff8ee;
-  font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;text-transform:uppercase;font-size:21px;line-height:.92;
-  text-shadow:0 1px 0 rgba(0,0,0,.2)}
-.badge-yt{position:absolute;top:8px;left:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
-  background:rgba(0,0,0,.6);color:#fff;padding:3px 6px;border-radius:4px}
-.pbtn{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
-  background:var(--gold);color:var(--ink-on);box-shadow:0 4px 12px rgba(0,0,0,.3);transition:transform .2s}
-.pbtn svg{width:14px;height:14px;fill:currentColor}
-.rec:hover .cover{transform:translateY(-3px)}
-.rec:hover .pbtn{transform:scale(1.08)}
-.rec:hover .disc{transform:translateX(16%)}
-.rec.on .disc{transform:translateX(30%);animation:spin 2.2s linear infinite}
-.rec.on .cover{transform:translateX(-4%)}
-.rec.on .pbtn{background:var(--clay);color:var(--bg)}
-@keyframes spin{from{rotate:0deg}to{rotate:360deg}}
-.rec-txt{display:flex;flex-direction:column;line-height:1.2;min-width:0}
-.rec-txt b{font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rec-txt small{font-family:var(--mono);font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gen{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px;color:#fff;font-family:var(--display);font-weight:600;font-size:17px;line-height:1.15;letter-spacing:-.01em;hyphens:auto;-webkit-hyphens:auto}
+.badge-yt{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;letter-spacing:.04em;background:rgba(255,255,255,.88);color:#151515;padding:3px 7px;border-radius:999px}
+.pbtn{position:absolute;right:10px;bottom:10px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.92);color:#151515;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:transform .2s,opacity .2s;opacity:.0;transform:translateY(4px)}
+.pbtn svg{width:12px;height:12px;fill:currentColor;margin-left:2px}
+.rec:hover .cover,.rec:focus-visible .cover{transform:translateY(-3px);box-shadow:0 14px 30px var(--shadow)}
+.rec:hover .pbtn,.rec:focus-visible .pbtn,.rec.on .pbtn{opacity:1;transform:none}
+.rec.on .cover{box-shadow:0 0 0 2px var(--accent)}
+.rec.on .pbtn{background:var(--accent);color:var(--on-accent)}
+@media (hover:none){.pbtn{opacity:1;transform:none}}
+.rec-txt{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.rec-txt b{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec-txt small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eq{display:none;position:absolute;top:10px;right:10px;gap:2px;align-items:flex-end;height:14px;padding:4px 5px;border-radius:6px;background:rgba(255,255,255,.9);box-sizing:content-box}
+.rec.on .eq{display:inline-flex}
+.eq i{width:3px;background:#56633f;border-radius:1px;animation:eq .9s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:4px}50%{height:14px}}
 
-/* ── Wochenleiste ── */
-nav.week{position:sticky;top:0;z-index:5;margin-top:18px;padding-block:calc(env(safe-area-inset-top,0px) + 10px) 10px;
-  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;border-bottom:1px solid var(--line)}
-.dbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 0 7px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;min-width:0;transition:background .2s,border-color .2s}
-.dbtn .d{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.dbtn .n{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 70;font-size:26px;line-height:1.05}
-.dbtn .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.dbtn[data-kind="club"] .k{color:var(--gold)}
-.dbtn[data-kind="live"] .k{color:var(--muted)}
-.dbtn.today{border-color:var(--gold)}
-.dbtn[aria-pressed="true"]{background:var(--fg);border-color:var(--fg)}
-.dbtn[aria-pressed="true"] *{color:var(--bg)!important}
-.filters{display:flex;gap:8px;flex-wrap:wrap;padding-top:14px}
-.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;cursor:pointer;font-size:14px}
-.chip[aria-pressed="true"]{background:color-mix(in srgb,var(--gold) 18%,transparent);border-color:var(--gold)}
+/* Wochen-Segmente */
+.weekbar{position:sticky;top:0;z-index:5;margin-top:40px;padding-block:calc(env(safe-area-inset-top,0px) + 12px) 12px;
+  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+nav.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;padding:4px;background:var(--sunk);border-radius:14px;flex:1 1 520px;min-width:0}
+.dbtn{border:0;background:transparent;border-radius:10px;padding:7px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;transition:background .2s}
+.dbtn .d{font-size:11px;font-weight:500;color:var(--muted)}
+.dbtn .n{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.1;font-variant-numeric:tabular-nums}
+.dbtn.all .n{font-size:14px;line-height:1.35}
+.dbtn[data-kind="club"] .d::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-left:4px;vertical-align:middle}
+.dbtn.today .d{color:var(--accent);font-weight:600}
+.dbtn:hover{background:color-mix(in srgb,var(--surface) 60%,transparent)}
+.dbtn[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px var(--shadow)}
+.filters{display:flex;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 
-/* ── Tage & Flyer ── */
-section.day{padding-top:40px}
-.day-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.day-head h2{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;text-transform:uppercase;
-  font-size:clamp(44px,9vw,76px);line-height:.85}
-.day-head h2 span{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;color:var(--muted);font-size:.5em;margin-left:.2em;font-variation-settings:normal}
-.mode{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid currentColor}
-.mode.live{color:var(--muted)} .mode.club{color:var(--gold)}
-.events{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:14px}
+/* Tage */
+section.day{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padding-block:44px 8px;border-bottom:1px solid var(--line)}
+.day-head{align-self:start;position:sticky;top:96px}
+.day-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.03em;line-height:1.05}
+.day-head p{margin:4px 0 12px;color:var(--muted);font-size:14px}
+.mode{display:inline-block;font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.mode.club{background:var(--accent-soft);color:var(--accent)}
+.events{display:flex;flex-direction:column;min-width:0}
 
-.ev{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden}
-.ev.top{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
-.ev.top::before{content:"Tipp";position:absolute;top:14px;right:-30px;transform:rotate(35deg);background:var(--gold);color:var(--ink-on);
-  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:3px 34px}
-.ev-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);padding-right:40px}
-.ev-time{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums;font-size:13px}
-.ev-tag{border:1px solid currentColor;border-radius:4px;padding:0 5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-.ev-tag.g{color:var(--muted)}
-.ev h3{margin:0;font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:25px;line-height:1.05;text-wrap:balance}
-.ev-venue{font-size:14px;color:var(--muted);margin-top:-6px}
-.ev-venue b{color:var(--fg);font-weight:600}
-.ev-why{margin:0;font-size:15px;max-width:60ch}
-.acts{display:flex;flex-direction:column;border-top:1px dashed var(--line);margin-top:2px}
-.act{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:9px;border-bottom:1px dashed var(--line);min-width:0}
-.act:last-child{border-bottom:0;padding-bottom:0}
-.act .who{min-width:0;overflow-wrap:anywhere;font-weight:600;font-size:15px}
-.act .who small{font-weight:400;color:var(--muted);font-size:13px}
-.play{flex:none;display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;border-radius:999px;padding:7px 13px 7px 10px;
-  background:var(--gold);color:var(--ink-on);font-weight:700;font-size:13px;transition:transform .15s}
-.play svg{width:11px;height:11px;fill:currentColor}
-.play:hover{transform:scale(1.04)}
-.play.on{background:var(--clay);color:var(--bg)}
-.ext{flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;
-  border:1px solid var(--line);border-radius:999px;padding:5px 10px}
-.ext:hover{color:var(--fg);border-color:var(--muted)}
-.ev-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:4px}
-.fav{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;color:var(--muted)}
-.fav[aria-pressed="true"]{color:var(--gold);border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent)}
+.ev{display:grid;grid-template-columns:64px minmax(0,1fr);gap:20px;padding-block:22px;border-top:1px solid var(--line);min-width:0}
+.ev:first-child{border-top:0;padding-top:4px}
+.ev-time{font-family:var(--display);font-weight:500;font-size:15px;font-variant-numeric:tabular-nums;padding-top:3px}
+.ev-time small{display:block;font-family:var(--body);font-size:12px;color:var(--muted);font-weight:400}
+.ev-body{min-width:0;display:flex;flex-direction:column;gap:6px}
+.ev-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ev h3{margin:0;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+.ev-top{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent);color:var(--on-accent)}
+.ev-tag{font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.ev-venue{font-size:14px;color:var(--muted)}
+.ev-why{margin:4px 0 6px;max-width:62ch;font-size:15px}
+.acts{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:2px 14px}
+.act{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;border-top:1px solid var(--line);min-width:0}
+.act:first-child{border-top:0}
+.act .who{min-width:0;overflow-wrap:anywhere;font-weight:500;font-size:14px}
+.act .who small{font-weight:400;color:var(--muted);font-size:13px;margin-left:4px}
+.play{flex:none;display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;border-radius:999px;padding:7px 13px 7px 11px;
+  background:var(--fg);color:var(--bg);font-weight:500;font-size:13px;transition:opacity .15s}
+.play svg{width:10px;height:10px;fill:currentColor}
+.play:hover{opacity:.85}
+.play.on{background:var(--accent);color:var(--on-accent)}
+.ext{flex:none;font-size:13px;color:var(--muted);text-decoration:none}
+.ext:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+.ev-foot{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.fav{border:0;background:none;padding:0;cursor:pointer;font-size:13px;color:var(--muted)}
+.fav:hover{color:var(--fg)}
+.fav[aria-pressed="true"]{color:var(--accent);font-weight:500}
 .tix{font-size:13px;color:var(--muted);text-underline-offset:3px}
-.empty{color:var(--muted);font-family:var(--serif);font-style:italic;font-size:19px;margin:0}
+.tix:hover{color:var(--fg)}
+.empty{color:var(--muted);margin:0;padding-block:8px}
 
-
-.tix-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
-  background:var(--sunk);border:1px solid var(--line)}
-.tix-price{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:22px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tix-price small{font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
-.tix-none{color:var(--muted)}
-.tix-status{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;min-width:0}
-.tix-status i{flex:none;width:8px;height:8px;border-radius:50%;background:#2fb36b}
-.tix-hot .tix-status i{background:#f5a524}
-.tix-gone .tix-status{color:var(--muted)}
-.tix-gone .tix-status i{background:var(--muted)}
-.tix-gone .tix-price{text-decoration:line-through;color:var(--muted)}
-.tix-buy{flex:none;background:var(--fg);color:var(--bg);text-decoration:none;font-weight:700;font-size:13px;border-radius:999px;padding:8px 14px;white-space:nowrap}
+/* Ticket-Zeile (Konzerte) */
+.tix-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px 10px 10px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.tix-price{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tix-none{color:var(--soft)}
+.tix-status{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);min-width:0}
+.tix-status i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.tix-hot .tix-status{color:var(--hot)}
+.tix-hot .tix-status i{background:var(--hot)}
+.tix-gone .tix-status i{background:var(--soft)}
+.tix-buy{flex:none;background:var(--accent);color:var(--on-accent);text-decoration:none;font-weight:500;font-size:13px;border-radius:999px;padding:7px 14px;white-space:nowrap}
+.tix-buy:hover{opacity:.9}
 .tix-buy.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
-.tix-note{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted)}
-@media (max-width:420px){.tix-row{grid-template-columns:auto 1fr;}.tix-buy{grid-column:1/-1;text-align:center}}
-footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:grid;gap:6px}
 
-/* ── Plattenspieler (Dock) ── */
-#dock{position:fixed;left:0;right:0;bottom:0;z-index:30;
-  padding:10px max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));
-  background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid var(--line);box-shadow:0 -12px 32px var(--shadow);
-  transform:translateY(0);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-#dock[hidden]{display:block!important;transform:translateY(110%);pointer-events:none}
-.dock-in{max-width:980px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:12px 14px;align-items:center}
-.tt{width:56px;height:56px;border-radius:50%;position:relative;flex:none;
-  background:repeating-radial-gradient(circle, #111 0 2px, #222 2px 3px);box-shadow:0 3px 10px rgba(0,0,0,.4);animation:spin 2.2s linear infinite}
-.tt img{position:absolute;inset:30%;width:40%;height:40%;border-radius:50%;object-fit:cover}
-.tt::after{content:"";position:absolute;inset:47%;border-radius:50%;background:var(--bg)}
+footer{margin-top:48px;font-size:12px;color:var(--muted);display:grid;gap:4px;max-width:70ch}
+
+/* Player */
+#dock{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;
+  max-width:760px;margin:0 auto;padding:12px 14px;border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--line);box-shadow:0 20px 50px var(--shadow);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s}
+#dock[hidden]{display:block!important;transform:translateY(130%);opacity:0;pointer-events:none}
+.dock-in{display:grid;grid-template-columns:auto 1fr auto;gap:10px 12px;align-items:center}
+.tt{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--sunk);position:relative}
+.tt img{width:100%;height:100%;object-fit:cover;display:block}
 .now{min-width:0}
-.now small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-.now b{display:block;font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:20px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.now span{font-size:13px;color:var(--muted)}
-.dock-btns{display:flex;gap:8px;align-items:center}
-.dock-btns a,.dock-btns button{border:1px solid var(--line);background:transparent;border-radius:999px;height:34px;padding:0 12px;
-  display:inline-flex;align-items:center;font-size:12px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;cursor:pointer;color:var(--fg)}
-.dock-btns button{width:34px;padding:0;justify-content:center;font-size:15px}
+.now small{display:block;font-size:11px;font-weight:500;color:var(--accent)}
+.now b{display:block;font-family:var(--display);font-weight:600;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now span{font-size:12px;color:var(--muted)}
+.dock-btns{display:flex;gap:6px;align-items:center}
+.dock-btns a,.dock-btns button{border:1px solid var(--line);background:transparent;border-radius:999px;height:32px;padding:0 12px;
+  display:inline-flex;align-items:center;font-size:12px;font-weight:500;text-decoration:none;cursor:pointer;color:var(--fg)}
+.dock-btns button{width:32px;padding:0;justify-content:center}
 #dock-frame{grid-column:1/-1;min-width:0}
 #dock-frame iframe{display:block;width:100%;height:116px;border:0;border-radius:10px}
 #dock-frame iframe.yt{width:min(100%,260px);height:auto;aspect-ratio:16/9;background:#000}
-body.docked{padding-bottom:300px}
 .dock-note{grid-column:1/-1;margin:0;font-size:11px;color:var(--muted)}
-.covers-btn{flex:none;white-space:nowrap;border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;cursor:pointer;
-  font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.covers-btn[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+body.docked{padding-bottom:300px}
 
-@media (max-width:560px){
-  .shelf{grid-auto-columns:128px;gap:12px}
-  .dbtn .n{font-size:21px}
-  .dbtn .k{display:none}
-  .ev h3{font-size:22px}
-  .tt{width:44px;height:44px}
-  .now b{font-size:17px}
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:28px;padding-block:40px 32px}
+  .stats{border-left:0;border-top:1px solid var(--line)}
+  .stat{padding:14px 0}
+  .stat:nth-child(odd){padding-right:16px}
+  .stat:nth-child(even){padding-left:16px;border-left:1px solid var(--line)}
+  section.day{grid-template-columns:1fr;gap:16px;padding-top:36px}
+  .day-head{position:static;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .day-head p{margin:0}
+  .topbar nav a{display:none}
+}
+@media (max-width:520px){
+  .shelf{grid-auto-columns:140px;gap:12px}
+  .ev{grid-template-columns:1fr;gap:6px}
+  .ev-time{display:flex;gap:8px;align-items:baseline;padding:0}
+  .ev-time small{display:inline}
+  .tix-row{grid-template-columns:auto 1fr}
+  .tix-buy{grid-column:1/-1;text-align:center}
   .dock-btns a{display:none}
+  .filters{width:100%}
 }
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
-}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <div class="topbar">
+    <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 12 19 5" stroke-linecap="round"/></svg>Wochenradar Köln</div>
+    <nav aria-label="Seitenbereiche"><a href="#regal">Reinhören</a><a href="#woche">Programm</a><span class="kw">KW 47 · 17.–22. Nov</span></nav>
+  </div>
 
-  <header class="mast">
-    <div class="mast-top"><span class="live"><i></i>KW 47 · 17.–22. November 2026</span><span>Köln · 50°56′ N</span></div>
-    <h1>Wochen<br><span class="row2">radar <em>wie klingt's?</em></span></h1>
-    <p class="lede">Unter der Woche <b>Konzerte</b>, ab Freitag <b>Club</b>. Platte antippen, reinhören, entscheiden. Der Player läuft unten weiter, während du durch die Woche scrollst.</p>
+  <header class="hero">
+    <div>
+      <h1>Was läuft in Köln, <span>und wie klingt's?</span></h1>
+      <p class="lede">Unter der Woche Konzerte, ab Freitag Club. Reinhören, bevor du losgehst. Der Player läuft unten weiter, während du durch die Woche scrollst.</p>
+    </div>
+    <div class="stats" aria-label="Diese Woche">
+      <div class="stat"><b id="st-events">–</b><span>Events</span></div>
+      <div class="stat"><b id="st-sets">–</b><span>Hörproben</span></div>
+      <div class="stat"><b id="st-tips">–</b><span>Tipps der Woche</span></div>
+      <div class="stat"><b id="st-tix">–</b><span>Konzerte mit Tickets</span></div>
+    </div>
   </header>
 
-  <section class="crate" aria-label="Sets und Songs zum Reinhören">
-    <div class="sec-label"><span>Plattenregal · sofort reinhören</span><button type="button" class="covers-btn" id="covers-btn">Cover laden</button></div>
+  <section class="sec" id="regal" aria-label="Reinhören">
+    <div class="sec-head">
+      <div><h2>Reinhören</h2><p>DJ-Sets und Videos der Woche, direkt hier abspielbar.</p></div>
+      <button type="button" class="covers-btn" id="covers-btn">Cover laden</button>
+    </div>
     <div class="shelf" id="shelf"></div>
   </section>
 
-  <nav class="week" id="week" aria-label="Tage"></nav>
-  <div class="filters" role="group" aria-label="Filter">
-    <button type="button" class="chip" id="f-all" aria-pressed="true">Alles</button>
-    <button type="button" class="chip" id="f-fav" aria-pressed="false">♥ Nur gemerkte</button>
+  <div class="weekbar" id="woche">
+    <nav class="week" id="week" aria-label="Tage"></nav>
+    <div class="filters" role="group" aria-label="Filter">
+      <button type="button" class="chip" id="f-all" aria-pressed="true">Alles</button>
+      <button type="button" class="chip" id="f-fav" aria-pressed="false">Gemerkt</button>
+    </div>
   </div>
 
   <main id="list"></main>
 
   <footer>
     <span>Stand: Dienstag, 17. November 2026. Zeiten und Preise können sich ändern, vor dem Losgehen kurz checken.</span>
-    <span>Ticketpreise &amp; Verfügbarkeit laut Eventim, Stand 17.11., 16:50 Uhr (inkl. Gebühren, kann sich schnell ändern). Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Merk-Herzen bleiben nur in diesem Browser.</span>
+    <span>Ticketpreise &amp; Verfügbarkeit laut Eventim, Stand 17.11., 16:50 Uhr (inkl. Gebühren). Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de, eventim.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Gemerkte Events bleiben nur in diesem Browser.</span>
   </footer>
 </div>
 
@@ -285,7 +289,7 @@ const ytId = u => u.slice(3);
 const openUrl = u => isYT(u) ? "https://www.youtube.com/watch?v=" + ytId(u) : u;
 const embedSrc = u => isYT(u)
   ? "https://www.youtube-nocookie.com/embed/" + ytId(u) + "?autoplay=1&rel=0&playsinline=1"
-  : "https://w.soundcloud.com/player/?url=" + encodeURIComponent(u) + "&color=%23e30613&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false";
+  : "https://w.soundcloud.com/player/?url=" + encodeURIComponent(u) + "&color=%2356633f&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false";
 
 const DAYS = [
   {id:"di", d:"Di", n:17, name:"Dienstag",   kind:"live"},
@@ -386,10 +390,10 @@ const EVENTS = [
 const PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.2v9.6L10.4 6z"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const hash = s => [...s].reduce((h,c) => (h*31 + c.charCodeAt(0)) >>> 0, 7);
-const PALS = [["#e30613","#1a1b20"],["#15171c","#4a4f5a"],["#e30613","#ff8a7a"],["#13213b","#e30613"],["#2a2d35","#a3a8b2"],["#0e1a30","#4a6ea8"]];
+const PALS = [["#2b2d2f","#5b5f63"],["#3d4436","#7f8a6d"],["#1f2326","#4a5157"],["#4d5839","#93a07a"],["#2e3135","#7d838a"],["#353a2f","#a2ad8c"]];
 function genCover(name){
   const h = hash(name), [a,b] = PALS[h % PALS.length], ang = h % 360;
-  return `background:conic-gradient(from ${ang}deg at ${20 + h%60}% ${30 + (h>>3)%50}%, ${a}, ${b}, ${a});`;
+  return `background:linear-gradient(${120 + ang%90}deg, ${a}, ${b});`;
 }
 let favs = {}; try{ favs = JSON.parse(localStorage.getItem("kwr-favs")||"{}") || {}; }catch(e){}
 const saveFavs = () => { try{ localStorage.setItem("kwr-favs", JSON.stringify(favs)); }catch(e){} };
@@ -428,10 +432,10 @@ function renderShelf(){
   document.getElementById("shelf").innerHTML = SHELF.map((s,i) => {
     const d = DAYS.find(x => x.id === s.e.day);
     return `<button type="button" class="rec" id="rec-${i}" data-embed="${esc(s.url)}" data-title="${esc(s.n)}" data-sub="${d.d} ${d.n}. · ${esc(s.e.venue)}">
-      <div class="sleeve"><div class="disc"></div>
+      <div class="sleeve">
         <div class="cover" style="${genCover(s.n)}"><div class="gen">${esc(s.n)}</div>${isYT(s.url)?'<span class="badge-yt">Video</span>':''}</div>
         <span class="pbtn">${PLAY}</span></div>
-      <span class="rec-txt"><b>${esc(s.n)}</b><small>${d.d} ${d.n}. · ${esc(s.e.venue)}</small></span></button>`;
+      <span class="rec-txt"><b>${esc(s.n)}</b><small>${d.name} · ${esc(s.e.venue)}</small></span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span></button>`;
   }).join("");
   if(coversOk) loadCovers();
 }
@@ -451,28 +455,31 @@ let activeDay = null, onlyFav = false;
 function renderWeek(){
   document.getElementById("week").innerHTML = DAYS.map(d =>
     `<button type="button" class="dbtn${d.id===todayId?' today':''}" id="day-${d.id}" data-day="${d.id}" data-kind="${d.kind}" aria-pressed="${activeDay===d.id}">
-      <span class="d">${d.id===todayId?'Heute':d.d}</span><span class="n">${d.n}</span><span class="k">${d.kind==='club'?'Club':'Live'}</span></button>`).join("") +
-    `<button type="button" class="dbtn" id="day-all" data-day="" aria-pressed="${activeDay===null}"><span class="d">Alle</span><span class="n">∞</span><span class="k">Woche</span></button>`;
+      <span class="d">${d.id===todayId?'Heute':d.d}</span><span class="n">${d.n}</span></button>`).join("") +
+    `<button type="button" class="dbtn all" id="day-all" data-day="" aria-pressed="${activeDay===null}"><span class="d">Woche</span><span class="n">Alle</span></button>`;
 }
 function card(e){
-  const tag = e.tag ? `<span class="ev-tag${e.gold?' g':''}">${esc(e.tag)}</span>` : "";
+  const tag = e.tag ? `<span class="ev-tag">${esc(e.tag)}</span>` : "";
+  const top = e.top ? `<span class="ev-top">Tipp</span>` : "";
   const acts = e.acts.length ? `<div class="acts">${e.acts.map((a,i) => {
-      const who = `<span class="who">${esc(a.n)}${a.note?` <small>· ${esc(a.note)}</small>`:""}</span>`;
+      const who = `<span class="who">${esc(a.n)}${a.note?` <small>${esc(a.note)}</small>`:""}</span>`;
       const emb = EMBED[a.n];
       return emb
         ? `<div class="act">${who}<button type="button" class="play" id="p-${e.id}-${i}" data-embed="${esc(emb)}" data-title="${esc(a.n)}" data-sub="${esc(e.venue)}">${PLAY}${isYT(emb)?'Video':'Set'} hören</button></div>`
         : `<div class="act">${who}<a class="ext" href="${a.u}" target="_blank" rel="noopener">SoundCloud ↗</a></div>`;
     }).join("")}</div>` : `<p class="empty">Line-up folgt.</p>`;
   return `<article class="ev${e.top?' top':''}">
-    <div class="ev-meta"><span class="ev-time">${esc(e.time)}${e.end?` – ${esc(e.end)}`:""}</span>${e.price?`<span>${esc(e.price)}</span>`:""}${tag}</div>
-    <h3>${esc(e.title)}</h3>
-    <div class="ev-venue"><b>${esc(e.venue)}</b>${e.area?` · ${esc(e.area)}`:""}</div>
-    <p class="ev-why">${esc(e.why)}</p>
-    ${acts}
-    ${e.tix ? ticketRow(e.tix) : ""}
-    <div class="ev-foot">
-      <button type="button" class="fav" id="fav-${e.id}" data-fav="${e.id}" aria-pressed="${!!favs[e.id]}">${favs[e.id]?"♥ gemerkt":"♡ merken"}</button>
-      ${e.link?`<a class="tix" href="${e.link}" target="_blank" rel="noopener">Tickets &amp; Line-up ↗</a>`:""}
+    <div class="ev-time">${esc(e.time)}${e.end?`<small>bis ${esc(e.end)}</small>`:""}</div>
+    <div class="ev-body">
+      <div class="ev-head"><h3>${esc(e.title)}</h3>${top}${tag}</div>
+      <div class="ev-venue">${esc(e.venue)}${e.area?` · ${esc(e.area)}`:""}${e.price&&!e.tix?` · ${esc(e.price)}`:""}</div>
+      <p class="ev-why">${esc(e.why)}</p>
+      ${acts}
+      ${e.tix ? ticketRow(e.tix) : ""}
+      <div class="ev-foot">
+        <button type="button" class="fav" id="fav-${e.id}" data-fav="${e.id}" aria-pressed="${!!favs[e.id]}">${favs[e.id]?"♥ Gemerkt":"♡ Merken"}</button>
+        ${e.link?`<a class="tix" href="${e.link}" target="_blank" rel="noopener">Line-up &amp; Tickets ↗</a>`:""}
+      </div>
     </div></article>`;
 }
 /* ── Tickets (nur Konzerte). TICKET_AFF später mit Affiliate-Parametern füllen ── */
@@ -482,7 +489,7 @@ const withAff = u => TICKET_AFF ? u + (u.includes("?") ? "&" : "?") + TICKET_AFF
 function ticketRow(t){
   const st = {ok:["ok","Tickets da"], hot:["hot","Hohe Nachfrage"], gone:["gone","Keine Tickets mehr"]}[t.status];
   return `<div class="tix-row tix-${st[0]}">
-    <div class="tix-price">${t.price ? `<small>ab</small> ${esc(t.price)}` : `<span class="tix-none">–</span>`}</div>
+    <div class="tix-price">${t.price ? esc(t.price) : `<span class="tix-none">—</span>`}</div>
     <span class="tix-status"><i></i>${st[1]}</span>
     ${t.status !== "gone" ? `<a class="tix-buy" href="${esc(withAff(t.url))}" target="_blank" rel="noopener sponsored">Tickets ↗</a>`
       : `<a class="tix-buy ghost" href="${esc(t.url)}" target="_blank" rel="noopener">Warteliste ↗</a>`}
@@ -493,8 +500,8 @@ function renderList(){
     let evs = EVENTS.filter(e => e.day===d.id);
     if(onlyFav) evs = evs.filter(e => favs[e.id]);
     const body = evs.length ? evs.map(card).join("") : `<p class="empty">${onlyFav?"Noch nichts gemerkt an diesem Tag.":"Nichts gefunden."}</p>`;
-    return `<section class="day" id="sec-${d.id}"><div class="day-head"><h2>${d.name}<span>${d.n}. Nov</span></h2>
-      <span class="mode ${d.kind}">${d.kind==='club'?'Club · elektronisch':'Live · Konzerte'}</span></div><div class="events">${body}</div></section>`;
+    return `<section class="day" id="sec-${d.id}"><header class="day-head"><h2>${d.name}</h2>
+      <p>${d.n}. November</p><span class="mode ${d.kind}">${d.kind==='club'?'Club':'Konzerte'}</span></header><div class="events">${body}</div></section>`;
   }).join("");
   markPlaying();
 }
@@ -544,7 +551,14 @@ document.getElementById("f-all").onclick = () => { onlyFav = false; syncF(); };
 document.getElementById("f-fav").onclick = () => { onlyFav = true; syncF(); };
 function syncF(){ document.getElementById("f-all").setAttribute("aria-pressed", !onlyFav); document.getElementById("f-fav").setAttribute("aria-pressed", onlyFav); renderList(); }
 
-renderShelf(); renderWeek(); renderList();
+function renderStats(){
+  const set = (id,v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  set("st-events", EVENTS.length);
+  set("st-sets", SHELF.length);
+  set("st-tips", EVENTS.filter(e => e.top).length);
+  set("st-tix", EVENTS.filter(e => e.tix && e.tix.status !== "gone").length);
+}
+renderShelf(); renderWeek(); renderList(); renderStats();
 </script>
 </body>
 </html>
