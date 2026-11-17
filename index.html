@@ -306,6 +306,27 @@ const EMBED = {
   "Anna von Hausswolff": "yt:Nre0hcDz5TI",
   "Baby Lasagna": "yt:YIouQFxo0h0",
   "The Sheepdogs": "yt:h_5q0n2mDR8",
+  "Joe Jackson": "yt:PJwt2dxx9yg",
+  "Hamilton Goldsby Sasse": "yt:0R7apuvqV14",
+  "Quelle Chris": "yt:2xRW9JY5dZ0",
+  "Fly Anakin": "yt:REJHqtakikU",
+  "Amistat": "yt:kJ3NQrpu7hs",
+  "Muff Potter": "yt:EtlGUJQ1rrU",
+  "Mietze Conte": "yt:aZL0SCEHpgQ",
+  "soffie": "yt:M-klKqj-7Lo",
+  "Cassia": "yt:Ta2ULGIi2yk",
+  "CARSICK": "yt:bD4suGrVFkc",
+  "ANNĒ": "https://soundcloud.com/annemusicofficial",
+  "Lacchesi": "https://soundcloud.com/mamatoldya/lacchesi-piaceri-fugace-3",
+  "JKS": "https://soundcloud.com/jksmusic",
+  "Phil2": "https://soundcloud.com/cosanne/cosanne-b2b-phil2-schlegel",
+  "Cosanne": "https://soundcloud.com/cosanne/cosanne-b2b-phil2-schlegel",
+  "KIM SWIM": "https://soundcloud.com/kimswim/floor-is-lava-andata-kim-swim",
+  "Ahmet Sisman": "https://soundcloud.com/hate_music/ahmet-sisman-hate-x-the-third-room-x-stone-techno-festival-2022",
+  "Liho": "https://soundcloud.com/max-blumen/liho-b2b-max-blumen-flora-und",
+  "Max Blumen": "https://soundcloud.com/max-blumen/odonien-12062026-4hclosing",
+  "DJ Brause": "https://soundcloud.com/raserei_official/raserei-022-dj-brause",
+  "DJ Karriere": "https://soundcloud.com/karriere/dj-karriere-at-kompakt-total",
 };
 const isYT = u => u.startsWith("yt:");
 const ytId = u => u.slice(3);
@@ -526,7 +547,7 @@ function card(e){
       const emb = EMBED[a.n];
       return emb
         ? `<div class="act">${who}<button type="button" class="play" id="p-${e.id}-${i}" data-embed="${esc(emb)}" data-title="${esc(a.n)}" data-sub="${esc(e.venue)}">${PLAY}${isYT(emb)?'Video':'Set'} hören</button></div>`
-        : `<div class="act">${who}<a class="ext" href="${a.u}" target="_blank" rel="noopener">SoundCloud ↗</a></div>`;
+        : `<div class="act">${who}<a class="ext" href="${a.u}" target="_blank" rel="noopener">Auf SoundCloud suchen ↗</a></div>`;
     }).join("")}</div>` : `<p class="empty">Line-up folgt.</p>`;
   return `<article class="ev${e.top?' top':''}">
     ${thumb(e)}
