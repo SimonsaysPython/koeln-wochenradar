@@ -471,10 +471,23 @@ function renderWeek(){
       <span class="d">${d.id===todayId?'Heute':d.d}</span><span class="n">${d.n}</span></button>`).join("") +
     `<button type="button" class="dbtn all" id="day-all" data-day="" aria-pressed="${activeDay===null}"><span class="d">Woche</span><span class="n">Alle</span></button>`;
 }
+/* Pressefotos/Flyer für Events ohne Hörprobe (Eventim / Resident Advisor) */
+const PHOTO = {
+  joejackson:"https://www.eventim.de/obj/media/DE-eventim/teaser/smpfeature/2025/joe-jackson-fb-post-1200x628.png",
+  muff:"https://www.eventim.de/obj/mam/germany/e9/1c/muff-potter-tickets_507345_4005700_222x222.jpg",
+  soffie:"https://www.eventim.de/obj/media/DE-eventim/teaser/smpfeature/2025/soffie-fb-post-1200x628.png",
+  cassia:"https://www.eventim.de/obj/media/DE-eventim/teaser/smpfeature/2026/cassia-fb-post-1200x628.png",
+  amistat1:"https://www.eventim.de/obj/media/DE-eventim/galery/222x222/a/amistat-tickets-2026-02.jpg",
+  amistat2:"https://www.eventim.de/obj/media/DE-eventim/galery/222x222/a/amistat-tickets-2026-02.jpg",
+  carsick:"https://www.eventim.de/obj/media/DE-eventim/teaser/artworks/2026/carsick-tickets-header.jpg",
+  csm:"https://imgproxy.ra.co/_/rt:fill/h:630/w:1200/quality:50/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDM1ZDZiNjFhMjM0ZjUyNGQxNGE0ZDU0Yjc3NDY4OTRmMTFkMWNmNC5qcGc=",
+  lichtblick:"https://imgproxy.ra.co/_/rt:fill/h:630/w:1200/quality:50/aHR0cHM6Ly9pbWFnZXMucmEuY28vZTE4MWFiYTk3YzZmODBhNWNiNzYxYWEwNmY4ZWU4Y2FiNjc1ZjZiMS5qcGc=",
+};
 function thumb(e){
   const a = e.acts.find(x => EMBED[x.n]);
   const ini = e.title.replace(/[^A-Za-zÄÖÜäöü0-9 &]/g,"").split(/\s+/).filter(w => w && w !== "&" && w.toLowerCase() !== "x" && w.toLowerCase() !== "mit").slice(0,2).map(w => w[0].toUpperCase()).join("");
-  return `<div class="ev-thumb" ${a ? `data-art="${esc(EMBED[a.n])}"` : ""} style="${genCover(e.title)}"><span>${esc(ini)}</span></div>`;
+  const photo = PHOTO[e.id] ? `<img src="${esc(PHOTO[e.id])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+  return `<div class="ev-thumb" ${a && !photo ? `data-art="${esc(EMBED[a.n])}"` : ""} style="${genCover(e.title)}"><span>${esc(ini)}</span>${photo}</div>`;
 }
 function fillThumbs(){
   document.querySelectorAll(".ev-thumb[data-art]").forEach(async el => {
