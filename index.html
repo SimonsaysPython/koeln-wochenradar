@@ -6,10 +6,13 @@
 <title>Köln Wochenradar</title>
 <meta name="description" content="Was diese Woche in Köln läuft – mit Playern zum direkten Reinhören.">
 <meta name="theme-color" content="#16100c">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap">
+<meta name="robots" content="noindex, nofollow">
 <style>
+@font-face{font-family:"Archivo";src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
 /* Layout: Plakat-Masthead → Plattenregal (horizontal) → Wochenleiste → Flyer-Liste pro Tag → fester Plattenspieler unten */
 :root{
   --bg:#f2e9dc; --surface:#fbf6ee; --sunk:#e8dccb; --line:#d6c6b0; --fg:#22180f; --muted:#7a6756;
@@ -55,6 +58,19 @@ h1 em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:
 .lede{margin:4px 0 0;max-width:52ch;color:var(--muted);font-size:17px}
 .lede b{color:var(--fg);font-weight:700}
 
+/* ── Cover erst nach Zustimmung (sonst gehen IP-Adressen an SoundCloud/YouTube) ── */
+let coversOk = false; try{ coversOk = localStorage.getItem("kwr-covers") === "1"; }catch(e){}
+function syncCoversBtn(){
+  const b = document.getElementById("covers-btn");
+  b.textContent = coversOk ? "Cover an ✓" : "Cover laden";
+  b.setAttribute("aria-pressed", coversOk);
+  b.title = "Lädt Coverbilder von SoundCloud und YouTube. Dabei wird deine IP-Adresse an diese Dienste übertragen.";
+}
+document.getElementById("covers-btn").onclick = () => {
+  coversOk = !coversOk; try{ localStorage.setItem("kwr-covers", coversOk ? "1" : "0"); }catch(e){}
+  renderShelf();
+};
+
 /* ── Plattenregal ── */
 .crate{margin-top:26px}
 .sec-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
@@ -69,8 +85,8 @@ h1 em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:
   box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--gold) 70%,#000)}
 .cover{position:absolute;inset:0;border-radius:6px;overflow:hidden;box-shadow:0 10px 24px var(--shadow);background:var(--sunk);transition:transform .25s}
 .cover img{width:100%;height:100%;object-fit:cover;display:block}
-.gen{position:absolute;inset:0;display:flex;align-items:flex-end;padding:10px;color:#fff8ee;
-  font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;text-transform:uppercase;font-size:22px;line-height:.92;padding-right:52px;overflow-wrap:anywhere;
+.gen{position:absolute;inset:0;display:flex;align-items:flex-start;padding:34px 10px 10px;hyphens:auto;-webkit-hyphens:auto;color:#fff8ee;
+  font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;text-transform:uppercase;font-size:21px;line-height:.92;
   text-shadow:0 1px 0 rgba(0,0,0,.2)}
 .badge-yt{position:absolute;top:8px;left:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
   background:rgba(0,0,0,.6);color:#fff;padding:3px 6px;border-radius:4px}
@@ -172,7 +188,11 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
 #dock-frame{grid-column:1/-1;min-width:0}
 #dock-frame iframe{display:block;width:100%;height:116px;border:0;border-radius:10px}
 #dock-frame iframe.yt{width:min(100%,260px);height:auto;aspect-ratio:16/9;background:#000}
-body.docked{padding-bottom:280px}
+body.docked{padding-bottom:300px}
+.dock-note{grid-column:1/-1;margin:0;font-size:11px;color:var(--muted)}
+.covers-btn{flex:none;white-space:nowrap;border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.covers-btn[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
 
 @media (max-width:560px){
   .shelf{grid-auto-columns:128px;gap:12px}
@@ -198,7 +218,7 @@ body.docked{padding-bottom:280px}
   </header>
 
   <section class="crate" aria-label="Sets und Songs zum Reinhören">
-    <div class="sec-label"><span>Plattenregal · sofort reinhören</span><span id="crate-count"></span></div>
+    <div class="sec-label"><span>Plattenregal · sofort reinhören</span><button type="button" class="covers-btn" id="covers-btn">Cover laden</button></div>
     <div class="shelf" id="shelf"></div>
   </section>
 
@@ -212,7 +232,7 @@ body.docked{padding-bottom:280px}
 
   <footer>
     <span>Stand: Dienstag, 17. November 2026. Zeiten und Preise können sich ändern, vor dem Losgehen kurz checken.</span>
-    <span>Quellen: Resident Advisor, technoairlines.com, mvp.de · Cover von SoundCloud &amp; YouTube · Merk-Herzen bleiben nur in diesem Browser.</span>
+    <span>Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Merk-Herzen bleiben nur in diesem Browser.</span>
   </footer>
 </div>
 
@@ -222,6 +242,7 @@ body.docked{padding-bottom:280px}
     <div class="now"><small>Läuft gerade</small><b id="dock-title"></b><span id="dock-sub"></span></div>
     <div class="dock-btns"><a id="dock-ext" target="_blank" rel="noopener" href="#">Öffnen ↗</a><button type="button" id="dock-close" aria-label="Player schließen">✕</button></div>
     <div id="dock-frame"></div>
+    <p class="dock-note">Player von SoundCloud bzw. YouTube: Beim Abspielen werden Daten (z. B. deine IP-Adresse) an den Dienst übertragen.</p>
   </div>
 </div>
 
@@ -371,11 +392,24 @@ async function loadArt(url){
   return ART[url];
 }
 
+/* ── Cover erst nach Zustimmung (sonst gehen IP-Adressen an SoundCloud/YouTube) ── */
+let coversOk = false; try{ coversOk = localStorage.getItem("kwr-covers") === "1"; }catch(e){}
+function syncCoversBtn(){
+  const b = document.getElementById("covers-btn");
+  b.textContent = coversOk ? "Cover an ✓" : "Cover laden";
+  b.setAttribute("aria-pressed", coversOk);
+  b.title = "Lädt Coverbilder von SoundCloud und YouTube. Dabei wird deine IP-Adresse an diese Dienste übertragen.";
+}
+document.getElementById("covers-btn").onclick = () => {
+  coversOk = !coversOk; try{ localStorage.setItem("kwr-covers", coversOk ? "1" : "0"); }catch(e){}
+  renderShelf();
+};
+
 /* ── Plattenregal ── */
 const SHELF = [];
 EVENTS.forEach(e => e.acts.forEach(a => { if(EMBED[a.n] && !SHELF.find(s => s.n === a.n)) SHELF.push({n:a.n, e, url:EMBED[a.n]}); }));
 function renderShelf(){
-  document.getElementById("crate-count").textContent = SHELF.length + " Platten";
+  syncCoversBtn();
   document.getElementById("shelf").innerHTML = SHELF.map((s,i) => {
     const d = DAYS.find(x => x.id === s.e.day);
     return `<button type="button" class="rec" id="rec-${i}" data-embed="${esc(s.url)}" data-title="${esc(s.n)}" data-sub="${d.d} ${d.n}. · ${esc(s.e.venue)}">
@@ -384,6 +418,9 @@ function renderShelf(){
         <span class="pbtn">${PLAY}</span></div>
       <span class="rec-txt"><b>${esc(s.n)}</b><small>${d.d} ${d.n}. · ${esc(s.e.venue)}</small></span></button>`;
   }).join("");
+  if(coversOk) loadCovers();
+}
+function loadCovers(){
   SHELF.forEach(async (s,i) => {
     const src = await loadArt(s.url); if(!src) return;
     const img = new Image(); img.alt = "";
