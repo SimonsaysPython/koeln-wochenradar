@@ -162,6 +162,22 @@ section.day{padding-top:40px}
 .tix{font-size:13px;color:var(--muted);text-underline-offset:3px}
 .empty{color:var(--muted);font-family:var(--serif);font-style:italic;font-size:19px;margin:0}
 
+
+.tix-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
+  background:var(--sunk);border:1px solid var(--line)}
+.tix-price{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:22px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tix-price small{font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.tix-none{color:var(--muted)}
+.tix-status{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;min-width:0}
+.tix-status i{flex:none;width:8px;height:8px;border-radius:50%;background:#2fb36b}
+.tix-hot .tix-status i{background:#f5a524}
+.tix-gone .tix-status{color:var(--muted)}
+.tix-gone .tix-status i{background:var(--muted)}
+.tix-gone .tix-price{text-decoration:line-through;color:var(--muted)}
+.tix-buy{flex:none;background:var(--fg);color:var(--bg);text-decoration:none;font-weight:700;font-size:13px;border-radius:999px;padding:8px 14px;white-space:nowrap}
+.tix-buy.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.tix-note{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted)}
+@media (max-width:420px){.tix-row{grid-template-columns:auto 1fr;}.tix-buy{grid-column:1/-1;text-align:center}}
 footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:grid;gap:6px}
 
 /* ── Plattenspieler (Dock) ── */
@@ -231,7 +247,7 @@ body.docked{padding-bottom:300px}
 
   <footer>
     <span>Stand: Dienstag, 17. November 2026. Zeiten und Preise können sich ändern, vor dem Losgehen kurz checken.</span>
-    <span>Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Merk-Herzen bleiben nur in diesem Browser.</span>
+    <span>Ticketpreise &amp; Verfügbarkeit laut Eventim, Stand 17.11., 16:50 Uhr (inkl. Gebühren, kann sich schnell ändern). Privates, nicht-kommerzielles Projekt. Quellen: Resident Advisor, technoairlines.com, mvp.de. Diese Seite lädt nichts von Dritten, bis du Cover einschaltest oder etwas abspielst. Merk-Herzen bleiben nur in diesem Browser.</span>
   </footer>
 </div>
 
@@ -281,33 +297,33 @@ const DAYS = [
 ];
 
 const EVENTS = [
-  {day:"di", id:"joejackson", time:"19:30", title:"Joe Jackson & Band", venue:"Gloria", area:"Innenstadt",
+  {day:"di", id:"joejackson", tix:{status:"gone", url:"https://www.eventim.de/event/joe-jackson-band-hope-and-fury-tour-2026-gloria-20930313/"}, time:"19:30", title:"Joe Jackson & Band", venue:"Gloria", area:"Innenstadt",
    why:"Der Mann hinter „Steppin' Out“. Hope And Fury Tour, mit Band.",
    acts:[{n:"Joe Jackson", u:SC("Joe Jackson Steppin Out")}]},
   {day:"di", id:"kinggeorg", time:"abends", title:"Hamilton – Goldsby – Sasse", venue:"King Georg", area:"Agnesviertel", tag:"Jazz",
    why:"Jazz-Trio im kleinen Club, läuft Dienstag und Mittwoch.",
    acts:[{n:"Hamilton Goldsby Sasse", u:SC("Hamilton Goldsby Sasse")}]},
 
-  {day:"mi", id:"hausswolff", top:true, time:"abends", title:"Anna von Hausswolff", venue:"Stadthalle Köln", area:"Mülheim",
+  {day:"mi", id:"hausswolff", tix:{status:"ok", url:"https://www.eventim.de/event/anna-von-hausswolff-stadthalle-koeln-muelheim-21676255/", price:"40,90 €"}, top:true, time:"20:00", title:"Anna von Hausswolff", venue:"Stadthalle Köln", area:"Mülheim",
    why:"Schwedin an der Orgel. Düster, laut, riesig: Drone trifft Gothic. Live eine Wucht.",
    acts:[{n:"Anna von Hausswolff", u:SC("Anna von Hausswolff")}]},
-  {day:"mi", id:"sheepdogs", time:"20:00", title:"The Sheepdogs", venue:"Gebäude 9", area:"Deutz",
+  {day:"mi", id:"sheepdogs", tix:{status:"ok", url:"https://www.eventim.de/event/the-sheepdogs-live-2026-gebaeude-9-20946000/", price:"33,70 €"}, time:"20:00", title:"The Sheepdogs", venue:"Gebäude 9", area:"Deutz",
    why:"Kanadischer Classic-Rock mit viel 70er-Gitarre.",
    acts:[{n:"The Sheepdogs", u:SC("The Sheepdogs")}]},
-  {day:"mi", id:"lasagna", time:"abends", title:"Baby Lasagna", venue:"Die Kantine", area:"Longerich",
+  {day:"mi", id:"lasagna", tix:{status:"ok", url:"https://www.eventim.de/event/baby-lasagna-die-kantine-21370864/", price:"32,90 €"}, time:"20:00", title:"Baby Lasagna", venue:"Die Kantine", area:"Longerich",
    why:"Der Kroate mit „Rim Tim Tagi Dim“ vom ESC 2024. Party garantiert.",
    acts:[{n:"Baby Lasagna", u:SC("Baby Lasagna Rim Tim Tagi Dim")}]},
-  {day:"mi", id:"quelle", time:"abends", title:"Quelle Chris & Fly Anakin", venue:"Veedel Club", area:"", tag:"Hip-Hop",
+  {day:"mi", id:"quelle", tix:{status:"ok", url:"https://www.eventim.de/event/quelle-chris-fly-anakin-nightshift-tour-26-veedel-club-21999091/", price:"28,20 €"}, time:"19:00", title:"Quelle Chris & Fly Anakin", venue:"Veedel Club", area:"", tag:"Hip-Hop",
    why:"US-Underground-Rap, NightShift Tour.",
    acts:[{n:"Quelle Chris", u:SC("Quelle Chris")},{n:"Fly Anakin", u:SC("Fly Anakin")}]},
-  {day:"mi", id:"amistat1", time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt", price:"ab ca. 49 €",
+  {day:"mi", id:"amistat1", tix:{status:"ok", url:"https://www.eventim.de/search/?searchterm=Amistat", price:"49,25 €"}, time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt",
    why:"Folk-Duo, zweistimmig und ruhig. Spielt Mittwoch und Donnerstag.",
    acts:[{n:"Amistat", u:SC("Amistat")}]},
 
-  {day:"do", id:"muff", time:"abends", title:"Muff Potter", venue:"Die Kantine", area:"Longerich",
+  {day:"do", id:"muff", tix:{status:"hot", url:"https://www.eventim.de/event/muff-potter-klepto-tour-2026-club-volta-22364604/", price:"35,70 €"}, time:"20:00", title:"Muff Potter", venue:"Club Volta", area:"Mülheim",
    why:"Deutscher Punk-Indie mit Texten zum Mitbrüllen. Klepto Tour 2026.",
    acts:[{n:"Muff Potter", u:SC("Muff Potter")}]},
-  {day:"do", id:"amistat2", time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt", price:"ab ca. 49 €",
+  {day:"do", id:"amistat2", tix:{status:"ok", url:"https://www.eventim.de/search/?searchterm=Amistat", price:"49,25 €"}, time:"20:00", title:"Amistat", venue:"Gloria", area:"Innenstadt",
    why:"Zweiter Abend, falls Mittwoch nicht passt.",
    acts:[{n:"Amistat", u:SC("Amistat")}]},
   {day:"do", id:"mietze", time:"19:00", title:"Mietze Conte", venue:"Garagen", area:"",
@@ -354,14 +370,14 @@ const EVENTS = [
   {day:"sa", id:"lichtblick", time:"23:00", title:"Lichtblick – Winter Rave", venue:"Odonien", area:"Neuehrenfeld",
    why:"Line-up noch nicht raus. Odonien im Winter ist trotzdem immer ein Erlebnis.",
    acts:[], link:"https://www.technoairlines.com/event/lichtblick-in-odonien-odonien-2026-11-21"},
-  {day:"sa", id:"soffie", time:"19:00", title:"soffie", venue:"Luxor", area:"Südstadt", tag:"Konzert", gold:true,
+  {day:"sa", id:"soffie", tix:{status:"gone", url:"https://www.eventim.de/artist/soffie/soffie-fuer-mich-da-tour-2026-3622638/"}, time:"19:00", title:"soffie", venue:"Luxor", area:"Südstadt", tag:"Konzert", gold:true,
    why:"Falls du vorher noch was Live willst: Indie-Pop, Für mich da Tour.",
    acts:[{n:"soffie", u:SC("soffie")}]},
 
-  {day:"so", id:"cassia", time:"abends", title:"Cassia", venue:"Club Volta", area:"Mülheim",
+  {day:"so", id:"cassia", tix:{status:"ok", url:"https://www.eventim.de/artist/cassia/", price:"31,50 €"}, time:"20:00", title:"Cassia", venue:"Club Volta", area:"Mülheim",
    why:"Britisches Indie-Trio, sonnig und gitarrig. Lemon Gelato Tour.",
    acts:[{n:"Cassia", u:SC("Cassia band")}]},
-  {day:"so", id:"carsick", time:"abends", title:"CARSICK", venue:"Blue Shell", area:"Belgisches Viertel",
+  {day:"so", id:"carsick", tix:{status:"ok", url:"https://www.eventim.de/search/?searchterm=Carsick", price:"28,00 €"}, time:"21:00", title:"CARSICK", venue:"Blue Shell", area:"Belgisches Viertel",
    why:"Kleiner Gig im Blue Shell, perfekt zum Ausklingen.",
    acts:[{n:"CARSICK", u:SC("Carsick")}]},
 ];
@@ -453,10 +469,24 @@ function card(e){
     <div class="ev-venue"><b>${esc(e.venue)}</b>${e.area?` · ${esc(e.area)}`:""}</div>
     <p class="ev-why">${esc(e.why)}</p>
     ${acts}
+    ${e.tix ? ticketRow(e.tix) : ""}
     <div class="ev-foot">
       <button type="button" class="fav" id="fav-${e.id}" data-fav="${e.id}" aria-pressed="${!!favs[e.id]}">${favs[e.id]?"♥ gemerkt":"♡ merken"}</button>
       ${e.link?`<a class="tix" href="${e.link}" target="_blank" rel="noopener">Tickets &amp; Line-up ↗</a>`:""}
     </div></article>`;
+}
+/* ── Tickets (nur Konzerte). TICKET_AFF später mit Affiliate-Parametern füllen ── */
+const TICKET_AFF = "";
+const TIX_CHECKED = "17.11., 16:50";
+const withAff = u => TICKET_AFF ? u + (u.includes("?") ? "&" : "?") + TICKET_AFF : u;
+function ticketRow(t){
+  const st = {ok:["ok","Tickets da"], hot:["hot","Hohe Nachfrage"], gone:["gone","Keine Tickets mehr"]}[t.status];
+  return `<div class="tix-row tix-${st[0]}">
+    <div class="tix-price">${t.price ? `<small>ab</small> ${esc(t.price)}` : `<span class="tix-none">–</span>`}</div>
+    <span class="tix-status"><i></i>${st[1]}</span>
+    ${t.status !== "gone" ? `<a class="tix-buy" href="${esc(withAff(t.url))}" target="_blank" rel="noopener sponsored">Tickets ↗</a>`
+      : `<a class="tix-buy ghost" href="${esc(t.url)}" target="_blank" rel="noopener">Warteliste ↗</a>`}
+  </div>`;
 }
 function renderList(){
   document.getElementById("list").innerHTML = DAYS.filter(d => !activeDay || d.id===activeDay).map(d => {
