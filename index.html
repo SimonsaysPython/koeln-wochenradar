@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Köln Wochenradar</title>
 <meta name="description" content="Was diese Woche in Köln läuft – mit Playern zum direkten Reinhören.">
-<meta name="theme-color" content="#16100c">
+<meta name="theme-color" content="#0c0d10">
 <meta name="robots" content="noindex, nofollow">
 <style>
 @font-face{font-family:"Archivo";src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
@@ -15,19 +15,19 @@
 @font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
 /* Layout: Plakat-Masthead → Plattenregal (horizontal) → Wochenleiste → Flyer-Liste pro Tag → fester Plattenspieler unten */
 :root{
-  --bg:#f2e9dc; --surface:#fbf6ee; --sunk:#e8dccb; --line:#d6c6b0; --fg:#22180f; --muted:#7a6756;
-  --gold:#b0700c; --gold-hi:#e9a53a; --clay:#c2502e; --ink-on:#fff8ee; --shadow:rgba(60,35,10,.16);
+  --bg:#f1f1ef; --surface:#ffffff; --sunk:#e6e6e3; --line:#d9d9d5; --fg:#111216; --muted:#676a72;
+  --gold:#e30613; --gold-hi:#ff3b30; --clay:#111216; --ink-on:#ffffff; --shadow:rgba(10,12,20,.14);
   --display:"Archivo","Arial Narrow",Impact,sans-serif;
   --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --body:"Archivo",ui-sans-serif,system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#16100c; --surface:#211812; --sunk:#1b130e; --line:#3a2b20; --fg:#f4e9d9; --muted:#a8927d;
-  --gold:#f0a83a; --gold-hi:#ffc865; --clay:#e86a44; --ink-on:#1a120c; --shadow:rgba(0,0,0,.45); color-scheme:dark}}
+  --bg:#0c0d10; --surface:#16181d; --sunk:#111317; --line:#272a31; --fg:#f2f2f0; --muted:#8e919a;
+  --gold:#ff2a2a; --gold-hi:#ff5a4f; --clay:#f2f2f0; --ink-on:#ffffff; --shadow:rgba(0,0,0,.5); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#16100c; --surface:#211812; --sunk:#1b130e; --line:#3a2b20; --fg:#f4e9d9; --muted:#a8927d;
-  --gold:#f0a83a; --gold-hi:#ffc865; --clay:#e86a44; --ink-on:#1a120c; --shadow:rgba(0,0,0,.45); color-scheme:dark}
+  --bg:#0c0d10; --surface:#16181d; --sunk:#111317; --line:#272a31; --fg:#f2f2f0; --muted:#8e919a;
+  --gold:#ff2a2a; --gold-hi:#ff5a4f; --clay:#f2f2f0; --ink-on:#ffffff; --shadow:rgba(0,0,0,.5); color-scheme:dark}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -35,9 +35,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
   font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-block:env(safe-area-inset-top,0px) 48px;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background:radial-gradient(1200px 600px at 85% -10%, color-mix(in srgb,var(--gold) 18%,transparent), transparent 60%),
-             radial-gradient(900px 500px at -10% 30%, color-mix(in srgb,var(--clay) 10%,transparent), transparent 60%)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background:radial-gradient(900px 420px at 92% -8%, color-mix(in srgb,var(--gold) 22%,transparent), transparent 60%)}
 .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto}
 a{color:inherit}
 button{font:inherit;color:inherit}
@@ -48,8 +47,8 @@ button{font:inherit;color:inherit}
 .mast-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
   font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .live{display:inline-flex;align-items:center;gap:8px}
-.live i{width:8px;height:8px;border-radius:50%;background:var(--clay);box-shadow:0 0 0 0 var(--clay);animation:ping 2s infinite}
-@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--clay) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 var(--gold);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
 h1{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 62;
   font-size:clamp(64px,17vw,176px);line-height:.82;letter-spacing:-.01em;text-transform:uppercase}
 h1 .row2{display:flex;align-items:baseline;gap:.18em;flex-wrap:wrap}
@@ -98,7 +97,7 @@ document.getElementById("covers-btn").onclick = () => {
 .rec:hover .disc{transform:translateX(16%)}
 .rec.on .disc{transform:translateX(30%);animation:spin 2.2s linear infinite}
 .rec.on .cover{transform:translateX(-4%)}
-.rec.on .pbtn{background:var(--clay)}
+.rec.on .pbtn{background:var(--clay);color:var(--bg)}
 @keyframes spin{from{rotate:0deg}to{rotate:360deg}}
 .rec-txt{display:flex;flex-direction:column;line-height:1.2;min-width:0}
 .rec-txt b{font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -113,8 +112,8 @@ nav.week{position:sticky;top:0;z-index:5;margin-top:18px;padding-block:calc(env(
 .dbtn .d{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .dbtn .n{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 70;font-size:26px;line-height:1.05}
 .dbtn .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.dbtn[data-kind="club"] .k{color:var(--clay)}
-.dbtn[data-kind="live"] .k{color:var(--gold)}
+.dbtn[data-kind="club"] .k{color:var(--gold)}
+.dbtn[data-kind="live"] .k{color:var(--muted)}
 .dbtn.today{border-color:var(--gold)}
 .dbtn[aria-pressed="true"]{background:var(--fg);border-color:var(--fg)}
 .dbtn[aria-pressed="true"] *{color:var(--bg)!important}
@@ -129,17 +128,17 @@ section.day{padding-top:40px}
   font-size:clamp(44px,9vw,76px);line-height:.85}
 .day-head h2 span{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;color:var(--muted);font-size:.5em;margin-left:.2em;font-variation-settings:normal}
 .mode{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid currentColor}
-.mode.live{color:var(--gold)} .mode.club{color:var(--clay)}
+.mode.live{color:var(--muted)} .mode.club{color:var(--gold)}
 .events{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:14px}
 
 .ev{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden}
-.ev.top{border-color:color-mix(in srgb,var(--gold) 70%,var(--line))}
+.ev.top{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
 .ev.top::before{content:"Tipp";position:absolute;top:14px;right:-30px;transform:rotate(35deg);background:var(--gold);color:var(--ink-on);
   font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:3px 34px}
 .ev-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);padding-right:40px}
 .ev-time{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums;font-size:13px}
-.ev-tag{border:1px solid currentColor;border-radius:4px;padding:0 5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--clay)}
-.ev-tag.g{color:var(--gold)}
+.ev-tag{border:1px solid currentColor;border-radius:4px;padding:0 5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.ev-tag.g{color:var(--muted)}
 .ev h3{margin:0;font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:25px;line-height:1.05;text-wrap:balance}
 .ev-venue{font-size:14px;color:var(--muted);margin-top:-6px}
 .ev-venue b{color:var(--fg);font-weight:600}
@@ -153,13 +152,13 @@ section.day{padding-top:40px}
   background:var(--gold);color:var(--ink-on);font-weight:700;font-size:13px;transition:transform .15s}
 .play svg{width:11px;height:11px;fill:currentColor}
 .play:hover{transform:scale(1.04)}
-.play.on{background:var(--clay)}
+.play.on{background:var(--clay);color:var(--bg)}
 .ext{flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;
   border:1px solid var(--line);border-radius:999px;padding:5px 10px}
 .ext:hover{color:var(--fg);border-color:var(--muted)}
 .ev-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:4px}
 .fav{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;color:var(--muted)}
-.fav[aria-pressed="true"]{color:var(--clay);border-color:var(--clay);background:color-mix(in srgb,var(--clay) 12%,transparent)}
+.fav[aria-pressed="true"]{color:var(--gold);border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent)}
 .tix{font-size:13px;color:var(--muted);text-underline-offset:3px}
 .empty{color:var(--muted);font-family:var(--serif);font-style:italic;font-size:19px;margin:0}
 
@@ -178,7 +177,7 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
 .tt img{position:absolute;inset:30%;width:40%;height:40%;border-radius:50%;object-fit:cover}
 .tt::after{content:"";position:absolute;inset:47%;border-radius:50%;background:var(--bg)}
 .now{min-width:0}
-.now small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--clay)}
+.now small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 .now b{display:block;font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 75;font-size:20px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .now span{font-size:13px;color:var(--muted)}
 .dock-btns{display:flex;gap:8px;align-items:center}
@@ -270,7 +269,7 @@ const ytId = u => u.slice(3);
 const openUrl = u => isYT(u) ? "https://www.youtube.com/watch?v=" + ytId(u) : u;
 const embedSrc = u => isYT(u)
   ? "https://www.youtube-nocookie.com/embed/" + ytId(u) + "?autoplay=1&rel=0&playsinline=1"
-  : "https://w.soundcloud.com/player/?url=" + encodeURIComponent(u) + "&color=%23e86a44&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false";
+  : "https://w.soundcloud.com/player/?url=" + encodeURIComponent(u) + "&color=%23e30613&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false";
 
 const DAYS = [
   {id:"di", d:"Di", n:17, name:"Dienstag",   kind:"live"},
@@ -371,7 +370,7 @@ const EVENTS = [
 const PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.2v9.6L10.4 6z"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const hash = s => [...s].reduce((h,c) => (h*31 + c.charCodeAt(0)) >>> 0, 7);
-const PALS = [["#c2502e","#f0a83a"],["#3f2a1c","#e86a44"],["#8a5a2b","#f3d9a4"],["#2f3a2a","#c9a24a"],["#5b2333","#f08a5d"],["#1f2b33","#e0b26a"]];
+const PALS = [["#e30613","#1a1b20"],["#15171c","#4a4f5a"],["#e30613","#ff8a7a"],["#13213b","#e30613"],["#2a2d35","#a3a8b2"],["#0e1a30","#4a6ea8"]];
 function genCover(name){
   const h = hash(name), [a,b] = PALS[h % PALS.length], ang = h % 360;
   return `background:conic-gradient(from ${ang}deg at ${20 + h%60}% ${30 + (h>>3)%50}%, ${a}, ${b}, ${a});`;
