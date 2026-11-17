@@ -122,6 +122,11 @@ section.day{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padd
 .ev-time{font-family:var(--display);font-weight:500;font-size:15px;font-variant-numeric:tabular-nums;padding-top:3px}
 .ev-time small{display:block;font-family:var(--body);font-size:12px;color:var(--muted);font-weight:400}
 .ev-body{min-width:0;display:flex;flex-direction:column;gap:6px}
+.ev-id{display:flex;gap:14px;align-items:center;min-width:0}
+.ev-idtxt{min-width:0;display:flex;flex-direction:column;gap:4px}
+.ev-thumb{flex:none;width:76px;height:76px;border-radius:12px;overflow:hidden;position:relative;display:grid;place-items:center;
+  color:rgba(255,255,255,.9);font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+.ev-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ev-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ev h3{margin:0;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
 .ev-top{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent);color:var(--on-accent)}
@@ -448,6 +453,18 @@ function renderWeek(){
       <span class="d">${d.id===todayId?'Heute':d.d}</span><span class="n">${d.n}</span></button>`).join("") +
     `<button type="button" class="dbtn all" id="day-all" data-day="" aria-pressed="${activeDay===null}"><span class="d">Woche</span><span class="n">Alle</span></button>`;
 }
+function thumb(e){
+  const a = e.acts.find(x => EMBED[x.n]);
+  const ini = e.title.replace(/[^A-Za-zÄÖÜäöü0-9 &]/g,"").split(/\s+/).filter(w => w && w !== "&" && w.toLowerCase() !== "x" && w.toLowerCase() !== "mit").slice(0,2).map(w => w[0].toUpperCase()).join("");
+  return `<div class="ev-thumb" ${a ? `data-art="${esc(EMBED[a.n])}"` : ""} style="${genCover(e.title)}"><span>${esc(ini)}</span></div>`;
+}
+function fillThumbs(){
+  document.querySelectorAll(".ev-thumb[data-art]").forEach(async el => {
+    if(el.querySelector("img")) return;
+    const src = await loadArt(el.dataset.art); if(!src) return;
+    const img = new Image(); img.alt = ""; img.onload = () => { el.querySelector("span")?.remove(); el.appendChild(img); }; img.src = src;
+  });
+}
 function card(e){
   const tag = e.tag ? `<span class="ev-tag">${esc(e.tag)}</span>` : "";
   const top = e.top ? `<span class="ev-top">Tipp</span>` : "";
@@ -461,8 +478,13 @@ function card(e){
   return `<article class="ev${e.top?' top':''}">
     <div class="ev-time">${esc(e.time)}${e.end?`<small>bis ${esc(e.end)}</small>`:""}</div>
     <div class="ev-body">
-      <div class="ev-head"><h3>${esc(e.title)}</h3>${top}${tag}</div>
-      <div class="ev-venue">${esc(e.venue)}${e.area?` · ${esc(e.area)}`:""}${e.price&&!e.tix?` · ${esc(e.price)}`:""}</div>
+      <div class="ev-id">
+        ${thumb(e)}
+        <div class="ev-idtxt">
+          <div class="ev-head"><h3>${esc(e.title)}</h3>${top}${tag}</div>
+          <div class="ev-venue">${esc(e.venue)}${e.area?` · ${esc(e.area)}`:""}${e.price&&!e.tix?` · ${esc(e.price)}`:""}</div>
+        </div>
+      </div>
       <p class="ev-why">${esc(e.why)}</p>
       ${acts}
       ${e.tix ? ticketRow(e.tix) : ""}
@@ -494,6 +516,7 @@ function renderList(){
       <p>${d.n}. November</p><span class="mode ${d.kind}">${d.kind==='club'?'Club':'Konzerte'}</span></header><div class="events">${body}</div></section>`;
   }).join("");
   markPlaying();
+  if(coversOk) fillThumbs();
 }
 
 /* ── Player ── */
